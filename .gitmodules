@@ -1,0 +1,9 @@
+[submodule "chaintify-server"]
+	path = chaintify-server
+	url = https://github.com/duysy/chaintify-server.git
+[submodule "chaintify-contract"]
+	path = chaintify-contract
+	url = https://github.com/duysy/chaintify-contract.git
+[submodule "chaintify-webapp"]
+	path = chaintify-webapp
+	url = https://github.com/duysy/chaintify-webapp.git
