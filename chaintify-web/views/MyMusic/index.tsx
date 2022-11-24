@@ -1,235 +1,121 @@
 import React from "react";
-import { useState } from "react";
-import Wrap from "../wrap";
+import { useState, useEffect } from "react";
+
 import { Box, Typography, Stack, Grid, Checkbox, Button } from "@mui/material";
-import { Favorite, MoreVert, Shuffle } from "@mui/icons-material";
 import Image from "next/image";
+
+import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
-import CarouselBasic from "../../components/CarouselBasic";
+import CarouselBasic from "../../components/CarouselPlayBasic";
+import MusicList from "../../components/MusicList";
+import CarouselPlayAlbum from "./components/CarouselPlayAlbum";
+
+import { TMusicList } from "../../components/MusicList/types";
+
+import LikeSongTab from "./components/LikeSongTab";
+import UploadTab from "./components/UploadTab";
+import CarouselBoxCircle from "./components/CarouselBoxCircle";
+
+import { list as listAlbum } from "../../apis/models/album/get_album";
+import { list as listPlaylist } from "../../apis/models/playlist/get_playlist";
+import { list as listSong } from "../../apis/models/song/get_song";
+
+type TTabView = "likeSongTab" | "UploadTab";
+type TAlbum = {
+  name: String;
+  imgUrl: String;
+  url: String;
+};
+
+type TPlaylist = {
+  name: String;
+  imgUrl: String;
+  clickHrefTo: String;
+};
 export default function MyMusic() {
-  const [tab, setTab] = useState("like");
-  const history = [
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/301/200",
-    },
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/302/200",
-    },
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/303/200",
-    },
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/304/200",
-    },
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/305/200",
-    },
-    {
-      title: "Top chart",
-      imgUrl: "https://picsum.photos/306/200",
-    },
-  ];
-  const songs = [
-    {
-      imgUrl: "https://picsum.photos/100/100",
-      song: "Watin man go do ~ Burna",
-      singer: "African giant",
-      time: "4:17",
-    },
-    {
-      imgUrl: "https://picsum.photos/100/100",
-      song: "Stand strong ~ Davido",
-      singer: "Single",
-      time: "4:17",
-    },
-    {
-      imgUrl: "https://picsum.photos/100/100",
-      song: "Closa ~ Ybee",
-      singer: "Obi datti",
-      time: "4:17",
-    },
-    {
-      imgUrl: "https://picsum.photos/100/100",
-      song: "Let me love you ~ Krisx",
-      singer: "Single",
-      time: "4:17",
-    },
-    {
-      imgUrl: "https://picsum.photos/100/100",
-      song: "Let me love you ~ Krisx",
-      singer: "Single",
-      time: "4:17",
-    },
-  ];
-  const Like = () => {
-    return (
-      <Stack spacing={1}>
-        {songs.map((item, index) => {
-          return (
-            <Box
-              sx={{
-                backdropFilter: "blur(5px)",
-                borderRadius: "15px",
-                background: "rgba(51, 55, 59, 0.37)",
-                padding: "5px",
-              }}
-            >
-              <Grid container spacing={0} key={index}>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "start",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  <Checkbox />
-                </Grid>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "start",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  <Image
-                    src={item.imgUrl}
-                    alt="Picture of the author"
-                    width={40}
-                    height={40}
-                    style={{
-                      borderRadius: "1px",
-                    }}
-                  />
-                </Grid>
-                <Grid
-                  item
-                  xs={3}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "start",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  {item.song}
-                </Grid>
-                <Grid
-                  item
-                  xs={3}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  {item.singer}
-                </Grid>
-                <Grid
-                  item
-                  xs={3}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  {item.time}
-                </Grid>
-                <Grid
-                  item
-                  xs={1}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                    color: "text.primary",
-                  }}
-                >
-                  <Favorite />
-                  <MoreVert />
-                </Grid>
-              </Grid>
-            </Box>
-          );
-        })}
-      </Stack>
-    );
-  };
-  const Upload = () => {
-    return <Box>Bạn chưa có bào nào trong thư viện</Box>;
+  const [tab, setTab] = useState<TTabView>("likeSongTab");
+
+  const [albums, setAlbums] = useState<TAlbum[]>();
+  const [playlists, setPlaylists] = useState<TPlaylist[]>();
+  const [songs, setSongs] = useState<TMusicList[]>();
+
+  useEffect(() => {
+    const initPlaylists = async () => {
+      let playlists_ = await listPlaylist({ limit: 5, offset: 0 });
+      playlists_ = playlists_.results;
+      playlists_ = playlists_.map((item: any, index: any) => {
+        return {
+          name: item.name,
+          imgUrl: "https://picsum.photos/301/200",
+          clickHrefTo: `/playlist/${item.id}`,
+        };
+      });
+
+      setPlaylists(playlists_);
+      console.log("playlists", playlists_);
+    };
+    initPlaylists();
+  }, []);
+  useEffect(() => {
+    const initAlbums = async () => {
+      let albums_ = await listAlbum({ limit: 5, offset: 0 });
+      albums_ = albums_.results;
+      albums_ = albums_.map((item: any, index: any) => {
+        return {
+          name: item.name,
+          imgUrl: "https://picsum.photos/301/200",
+          url: `/playlist/${item.id}`,
+        };
+      });
+      setAlbums(albums_);
+      console.log("albums", albums_);
+    };
+    initAlbums();
+  }, []);
+  useEffect(() => {
+    const initSongs = async () => {
+      let songs_ = await listSong({ depth: 1 });
+      songs_ = songs_.results;
+      songs_ = songs_.map((item: any, index: any) => {
+        return {
+          id: item.id,
+          imgUrl: "https://picsum.photos/100/100",
+          name: item.name,
+          artist: item.artist[0]?.name,
+          album: item.album?.name,
+          time: item.length,
+          favorite: true,
+          checkBoxStatus: false,
+        } as TMusicList;
+      });
+
+      setSongs(songs_);
+      console.log("songs", songs);
+    };
+    initSongs();
+  }, []);
+  const LikeSongTabWrap = () => {
+    return <MusicList list={songs as TMusicList[]} />;
   };
   return (
     <Wrap>
       <Box>
-        <SectionTitle>Thư viện</SectionTitle>
-        <Stack direction="row" spacing={3}>
-          {history.map((item, index) => {
-            return (
-              <Box
-                position="relative"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                  width: 150,
-                  height: 200,
-                }}
-              >
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{
-                    position: "absolute",
-                    top: 120,
-                    right: 5,
-                    color: "black",
-                    bgcolor: "text.primary",
-                    borderRadius: "1000px",
-                    padding: "5px",
-                  }}
-                >
-                  <Shuffle />
-                </Box>
-                <Image
-                  src={item.imgUrl}
-                  alt="Picture of the author"
-                  width={150}
-                  height={150}
-                  style={{
-                    borderRadius: "1000px",
-                  }}
-                />
-                <nav
-                  style={{
-                    color: "#FFFFFF",
-                    marginTop: "10px",
-                  }}
-                >
-                  {item.title}
-                </nav>
-              </Box>
-            );
-          })}
-        </Stack>
+        <Typography
+          variant="h3"
+          sx={{
+            color: "text.primary",
+          }}
+        >
+          Thư viện
+        </Typography>
       </Box>
       <Box>
         <SectionTitle>Playlist</SectionTitle>
-        <CarouselBasic list={history} />
+        {playlists ? <CarouselBoxCircle list={playlists} /> : <h1>Loading</h1>}
+      </Box>
+      <Box>
+        <SectionTitle>Album</SectionTitle>
+        {albums ? <CarouselPlayAlbum list={albums} /> : <h1>Loading</h1>}
       </Box>
       <Box>
         <SectionTitle>Bài hát</SectionTitle>
@@ -240,7 +126,7 @@ export default function MyMusic() {
         >
           <Button
             sx={
-              tab == "like"
+              tab == "likeSongTab"
                 ? {
                     borderRadius: "100px",
                     padding: "0.3rem 2rem",
@@ -253,17 +139,17 @@ export default function MyMusic() {
                   }
             }
             onClick={() => {
-              setTab("like");
+              setTab("likeSongTab");
             }}
           >
             Yêu thích
           </Button>
           <Button
             onClick={() => {
-              setTab("upload");
+              setTab("uploadTab" as TTabView);
             }}
             sx={
-              tab == "upload"
+              tab == ("uploadTab" as TTabView)
                 ? {
                     borderRadius: "100px",
                     padding: "0.3rem 2rem",
@@ -279,8 +165,8 @@ export default function MyMusic() {
             Đã tải lên
           </Button>
         </Box>
-        {tab == "like" && <Like />}
-        {tab == "upload" && <Upload />}
+        {tab == ("likeSongTab" as TTabView) && <LikeSongTabWrap />}
+        {tab == ("uploadTab" as TTabView) && <UploadTab />}
       </Box>
     </Wrap>
   );

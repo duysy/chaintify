@@ -1,5 +1,10 @@
 import React from "react";
 import Home from "../../views/Home";
+
 export default function index() {
-  return <Home></Home>;
+  return (
+    <>
+      <Home></Home>
+    </>
+  );
 }

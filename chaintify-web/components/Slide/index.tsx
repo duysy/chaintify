@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Slide.module.css";
 import { Stack } from "@mui/material";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
@@ -25,11 +25,20 @@ const itemData = [
     img: "https://picsum.photos/304/200",
     title: "Camera",
   },
+  ,
+  {
+    img: "https://picsum.photos/305/200",
+    title: "Camera",
+  },
 ];
 
 export default function Slide() {
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(3);
+  useEffect(() => {
+    const id = setInterval(() => next(), 5000);
+    return () => clearInterval(id);
+  });
 
   const back = () => {
     let from_ = from - 1;
@@ -44,9 +53,9 @@ export default function Slide() {
   const next = () => {
     let from_ = from + 1;
     let to_ = to + 1;
-    if (to_ > itemData.length - 1) {
-      to_ = itemData.length - 1;
-      from_ = to_ - 3;
+    if (to_ >= itemData.length - 1) {
+      from_ = 0;
+      to_ = 3;
     }
     setFrom(from_);
     setTo(to_);
@@ -71,10 +80,10 @@ export default function Slide() {
       <Stack sx={{ width: "100%", height: 180 }} direction="row" spacing={5}>
         {itemData.slice(from, to).map((item) => (
           <img
-            key={item.img}
+            key={item?.img}
             width="100%"
-            src={item.img}
-            alt={item.title}
+            src={item?.img}
+            alt={item?.title}
             loading="lazy"
             style={{
               borderRadius: "25px",

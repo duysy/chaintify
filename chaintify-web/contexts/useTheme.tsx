@@ -1,20 +1,17 @@
 import { createContext, ReactChild, useContext, useState } from "react";
 import { ThemeProvider, createTheme, ThemeOptions } from "@mui/material/styles";
-import { amber, deepOrange, grey } from "@mui/material/colors";
+import { deepOrange, grey } from "@mui/material/colors";
 export type ThemeContextValue = {
   mode: string;
   setMode: any;
   autoSetMode: () => void;
 };
-export const ThemeContext = createContext<ThemeContextValue>(
-  {} as ThemeContextValue
-);
+export const ThemeContext = createContext<ThemeContextValue>({} as ThemeContextValue);
 
 type Props = {
   children: ReactChild;
 };
 
-const lightMode = {};
 const ThemeContextProvider = ({ children }: Props) => {
   const [mode, setMode] = useState<"dark" | "light">("dark");
   const dartMode = createTheme({
@@ -25,7 +22,7 @@ const ThemeContextProvider = ({ children }: Props) => {
         divider: deepOrange[700],
         background: {
           default: "#1A1E1F",
-          paper: deepOrange[900],
+          paper: "#1A1E1F",
         },
         text: {
           primary: "#FFFFFF",
@@ -42,11 +39,11 @@ const ThemeContextProvider = ({ children }: Props) => {
         primary: deepOrange,
         divider: deepOrange[700],
         background: {
-          default: deepOrange[900],
+          default: "#FFFFFF",
           paper: deepOrange[900],
         },
         text: {
-          primary: "#fff",
+          primary: "#1A1E1F",
           secondary: grey[500],
         },
       },
@@ -76,9 +73,7 @@ const ThemeContextProvider = ({ children }: Props) => {
         autoSetMode,
       }}
     >
-      <ThemeProvider theme={getMode(mode) as ThemeOptions}>
-        {children}
-      </ThemeProvider>
+      <ThemeProvider theme={getMode(mode) as ThemeOptions}>{children}</ThemeProvider>
     </ThemeContext.Provider>
   );
 };

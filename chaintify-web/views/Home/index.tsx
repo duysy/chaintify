@@ -3,47 +3,55 @@ import Slide from "../../components/Slide";
 import Image from "next/image";
 import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
-import CarouselBasic from "../../components/CarouselBasic";
+import CarouselBasic from "../../components/CarouselPlayBasic";
 export default function Home() {
-  const history = [
+  const recently = [
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/301/200",
+      url: "artist",
     },
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/302/200",
+      url: "artist",
     },
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/303/200",
+      url: "artist",
     },
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/304/200",
+      url: "artist",
     },
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/305/200",
+      url: "artist",
     },
     {
-      title: "Top chart",
+      name: "Top chart",
       imgUrl: "https://picsum.photos/306/200",
+      url: "artist",
     },
   ];
+  const news = [...recently];
+  const albums = [...recently];
   return (
     <Wrap>
       <Slide />
       <Box>
         <SectionTitle>Gần đây</SectionTitle>
-        <CarouselBasic list={history} />
+        <CarouselBasic list={recently} />
       </Box>
       <Box>
         <SectionTitle>Mới phát hành</SectionTitle>
         <Grid container spacing={2}>
-          {history.map((item, index) => {
+          {news.map((item, index) => {
             return (
-              <Grid item xs={6} md={4}>
+              <Grid item xs={6} md={4} key={index}>
                 <Box
                   display="flex"
                   justifyContent="start"
@@ -72,41 +80,23 @@ export default function Home() {
                       marginLeft: "1rem",
                     }}
                   >
-                    <nav
-                      style={{
-                        fontFamily: "Ubuntu",
-                        fontStyle: "normal",
-                        fontWeight: "400",
-                        fontSize: "1.2rem",
-                        lineHeight: "18px",
-                      }}
-                    >
-                      Matias Bagato
-                    </nav>
-                    <nav
-                      style={{
-                        fontFamily: "Ubuntu",
-                        fontStyle: "normal",
-                        fontWeight: "400",
-                        fontSize: "1rem",
-                        lineHeight: "1.5rem",
+                    <Typography variant="subtitle1">Matias Bagato</Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
                         color: "rgba(255, 255, 255, 0.5)",
                       }}
                     >
                       Untitled C
-                    </nav>
-                    <nav
-                      style={{
-                        fontFamily: "Ubuntu",
-                        fontStyle: "normal",
-                        fontWeight: "400",
-                        fontSize: "1rem",
-                        lineHeight: "1.5rem",
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
                         color: "rgba(255, 255, 255, 0.5)",
                       }}
                     >
                       1 giờ trước
-                    </nav>
+                    </Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -116,7 +106,7 @@ export default function Home() {
       </Box>
       <Box>
         <SectionTitle>Album</SectionTitle>
-        <CarouselBasic list={history} />
+        <CarouselBasic list={albums} />
       </Box>
     </Wrap>
   );

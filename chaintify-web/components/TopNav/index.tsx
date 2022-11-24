@@ -1,36 +1,42 @@
 import React from "react";
-import { Grid, Box, TextField, Paper, Stack, Button } from "@mui/material";
-import {
-  NavigateBefore,
-  NavigateNext,
-  CloudUpload,
-  Search,
-  Settings,
-  Person,
-} from "@mui/icons-material";
 import styles from "./TopNav.module.css";
+
+import { useState } from "react";
+import { Grid, Box, TextField, Paper, Stack, Button } from "@mui/material";
+import { NavigateBefore, NavigateNext, CloudUpload, Search, Settings, Person } from "@mui/icons-material";
+import PopupMusicUpLoad from "../popups/PopupMusicUpLoad";
+
+import {useRouter} from "next/router"
 export default function TopNav() {
+  const router = useRouter()
+  const [openPopUp, setOpenPopUp] = useState(false);
+  const handelUploadClick = () => {
+    setOpenPopUp(true);
+  };
+  const handelClickNavigateBefore = () => {
+    router.back()
+  };
+  const handelNavigateNext = () => {
+    router.back()
+  };
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <>
       <Grid container spacing={0}>
         <Grid item xs={1}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-evenly"
-            sx={{ height: "100%" }}
-          >
+          <Stack direction="row" alignItems="center" justifyContent="space-evenly" sx={{ height: "100%" }}>
             <NavigateBefore
               sx={{
                 color: "text.primary",
                 fontSize: "2rem",
               }}
+              onClick={handelClickNavigateBefore}
             />
             <NavigateNext
               sx={{
                 color: "text.primary",
                 fontSize: "2rem",
               }}
+              onClick={handelNavigateNext}
             />
           </Stack>
         </Grid>
@@ -64,36 +70,22 @@ export default function TopNav() {
           </Stack>
         </Grid>
         <Grid item xs={5}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="end"
-            sx={{ height: "100%" }}
-          >
-            <Box
-              className={styles.circle}
-              sx={{ bgcolor: "background.default" }}
-            >
+          <Stack direction="row" alignItems="center" justifyContent="end" sx={{ height: "100%" }}>
+            <Box className={styles.circle} sx={{ bgcolor: "background.default" }} onClick={handelUploadClick}>
               <CloudUpload
                 sx={{
                   color: "text.primary",
                 }}
               />
             </Box>
-            <Box
-              className={styles.circle}
-              sx={{ bgcolor: "background.default" }}
-            >
+            <Box className={styles.circle} sx={{ bgcolor: "background.default" }}>
               <Settings
                 sx={{
                   color: "text.primary",
                 }}
               />
             </Box>
-            <Box
-              className={styles.circle}
-              sx={{ bgcolor: "background.default" }}
-            >
+            <Box className={styles.circle} sx={{ bgcolor: "background.default" }}>
               <Person
                 sx={{
                   color: "text.primary",
@@ -103,6 +95,7 @@ export default function TopNav() {
           </Stack>
         </Grid>
       </Grid>
-    </Box>
+      <PopupMusicUpLoad open={openPopUp} setOpen={setOpenPopUp} />
+    </>
   );
 }
