@@ -191,7 +191,7 @@ export default function MusicList(props: TProps) {
                   "&:last-child td, &:last-child th": { border: 0 },
                   backdropFilter: "blur(5px)",
                   borderRadius: "15px",
-                  background: "rgba(51, 55, 59, 0.37)",
+                  bgcolor: "background.paper",
                 }}
               >
                 <TableCell align="center" className={styles.tableRow}>

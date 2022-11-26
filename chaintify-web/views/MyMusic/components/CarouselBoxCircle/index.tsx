@@ -2,14 +2,7 @@ import React from "react";
 import styles from "./CarouselBoxCircle.module.css";
 
 import { Favorite, MoreVert, Shuffle, FilterDrama } from "@mui/icons-material";
-import {
-  Grid,
-  Stack,
-  Container,
-  Box,
-  Typography,
-  Checkbox,
-} from "@mui/material";
+import { Grid, Stack, Container, Box, Typography, Checkbox } from "@mui/material";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -62,12 +55,16 @@ export default function CarouselBoxCircle(props: TProps) {
                 top: 120,
                 right: 5,
                 color: "black",
-                bgcolor: "text.primary",
+                bgcolor: "background.paper",
                 borderRadius: "1000px",
                 padding: "5px",
               }}
             >
-              <Shuffle />
+              <Shuffle
+                sx={{
+                  color: "text.primary",
+                }}
+              />
             </Box>
             <Image
               src={item.imgUrl}

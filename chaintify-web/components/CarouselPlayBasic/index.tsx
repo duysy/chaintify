@@ -77,13 +77,13 @@ export default function CarouselPlayBasic(props: any) {
                 }}
               />
             </Box>
-            <nav
-              style={{
-                color: "#FFFFFF",
+            <Typography
+              sx={{
+                color: "text.primary",
               }}
             >
               {item.name}
-            </nav>
+            </Typography>
           </Box>
         );
       })}

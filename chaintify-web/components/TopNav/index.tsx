@@ -3,25 +3,32 @@ import styles from "./TopNav.module.css";
 
 import { useState } from "react";
 import { Grid, Box, TextField, Paper, Stack, Button } from "@mui/material";
-import { NavigateBefore, NavigateNext, CloudUpload, Search, Settings, Person } from "@mui/icons-material";
+import { NavigateBefore, NavigateNext, CloudUpload, Search, Settings, Person, DarkMode } from "@mui/icons-material";
 import PopupMusicUpLoad from "../popups/PopupMusicUpLoad";
-
-import {useRouter} from "next/router"
+import { useThemeContext } from "../../contexts/useTheme";
+import { useRouter } from "next/router";
 export default function TopNav() {
-  const router = useRouter()
+  const router = useRouter();
   const [openPopUp, setOpenPopUp] = useState(false);
+  const { autoSetMode } = useThemeContext();
   const handelUploadClick = () => {
     setOpenPopUp(true);
   };
   const handelClickNavigateBefore = () => {
-    router.back()
+    router.back();
   };
   const handelNavigateNext = () => {
-    router.back()
+    router.back();
+  };
+  const handelIconThemeModeClick = () => {
+    autoSetMode();
   };
   return (
     <>
-      <Grid container spacing={0}>
+      <Grid
+        container
+        spacing={0}
+      >
         <Grid item xs={1}>
           <Stack direction="row" alignItems="center" justifyContent="space-evenly" sx={{ height: "100%" }}>
             <NavigateBefore
@@ -45,8 +52,8 @@ export default function TopNav() {
             direction="row"
             alignItems="center"
             justifyContent="space-evenly"
-            sx={{ height: "100%" }}
-            style={{
+            sx={{
+              height: "100%",
               position: "relative",
             }}
           >
@@ -56,6 +63,8 @@ export default function TopNav() {
               placeholder="Tìm kiếm bài hát, nghệ sỹ..."
               sx={{
                 "& fieldset": { border: "none" },
+                bgcolor: "background.paper",
+                borderRadius: "100px",
               }}
             />
             <Search
@@ -71,6 +80,14 @@ export default function TopNav() {
         </Grid>
         <Grid item xs={5}>
           <Stack direction="row" alignItems="center" justifyContent="end" sx={{ height: "100%" }}>
+            <Box className={styles.circle} sx={{ bgcolor: "background.default" }} onClick={handelIconThemeModeClick}>
+              <DarkMode
+                sx={{
+                  color: "text.primary",
+                }}
+              />
+            </Box>
+
             <Box className={styles.circle} sx={{ bgcolor: "background.default" }} onClick={handelUploadClick}>
               <CloudUpload
                 sx={{

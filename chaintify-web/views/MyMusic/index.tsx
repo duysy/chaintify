@@ -64,7 +64,7 @@ export default function MyMusic() {
         return {
           name: item.name,
           imgUrl: "https://picsum.photos/301/200",
-          url: `/playlist/${item.id}`,
+          url: `/album/${item.id}`,
         };
       });
       setAlbums(albums_);
@@ -81,7 +81,7 @@ export default function MyMusic() {
           id: item.id,
           imgUrl: "https://picsum.photos/100/100",
           name: item.name,
-          artist: item.artist[0]?.name,
+          artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
           album: item.album?.name,
           time: item.length,
           favorite: true,

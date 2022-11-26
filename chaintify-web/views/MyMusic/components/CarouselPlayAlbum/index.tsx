@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./CarouselPlayAlbum.module.css";
 
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Typography } from "@mui/material";
 import { PlayCircle, PauseCircle, Add } from "@mui/icons-material";
 
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { useMusicPlayer } from "../../../../contexts/useMusicPlayer";
 import PopupCreateAlbum from "../../../../components/popups/PopupCreateAlbum";
+import CarouselPlayBasic from "../../../../components/CarouselPlayBasic";
 export default function CarouselPlayAlbum(props: any) {
   const list = props.list;
   const router = useRouter();
@@ -120,13 +121,13 @@ export default function CarouselPlayAlbum(props: any) {
                 }}
               />
             </Box>
-            <nav
-              style={{
-                color: "#FFFFFF",
+            <Typography
+              sx={{
+                color: "text.primary",
               }}
             >
               {item.name}
-            </nav>
+            </Typography>
           </Box>
         );
       })}

@@ -1,5 +1,5 @@
 import TextButtons from "../../components/TextButtons";
-import { Grid, Stack, Container, Box } from "@mui/material";
+import { Grid, Stack, Container, Box, Typography } from "@mui/material";
 import SideBar from "../../components/SideBar";
 import TopNav from "../../components/TopNav";
 import Slide from "../../components/Slide";
@@ -14,22 +14,32 @@ export default function Wrap(props: any) {
       spacing={0}
       rowSpacing={0}
       sx={{
-        bgcolor: "#1D2123",
+        bgcolor: "background.default",
         height: "100vh",
         width: "100%",
       }}
     >
-      <Grid item xs={2} sx={{ height: "8%" }}>
-        LOGO
+      <Grid item xs={2} sx={{ height: "10%", bgcolor: "background.default" }}>
+        <Box display="flex" alignItems="center" justifyContent="center" width="100%" height="100%">
+          <Typography
+            variant="h4"
+            sx={{
+              color: "text.primary",
+              fontWeight: "1000",
+            }}
+          >
+            Chaintify
+          </Typography>
+        </Box>
       </Grid>
-      <Grid item xs={10} sx={{ height: "8%" }}>
+      <Grid item xs={10} sx={{ height: "10%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <TopNav />
       </Grid>
-      <Grid item xs={2} sx={{ height: `calc(100% - ${hidden ? 8 : 15 + 8}%)` }}>
+      <Grid item xs={2} sx={{ height: `calc(100% - ${hidden ? 10 : 15 + 10}%)` }}>
         <SideBar />
       </Grid>
-      <Grid item xs={10} sx={{ height: `calc(100% - ${hidden ? 8 : 15 + 8}%)`, overflowY: "scroll", padding: "0 2rem" }}>
-        <Box sx={{ padding: "0 2rem" }}>{props.children}</Box>
+      <Grid item xs={10} sx={{ height: `calc(100% - ${hidden ? 10 : 15 + 10}%)`, overflowY: "scroll", padding: "0 2rem" }}>
+        <Box sx={{ padding: "0 1rem" }}>{props.children}</Box>
       </Grid>
       <Grid item xs={12} sx={{ height: "15%", display: hidden && "none" }}>
         {/* <MusicPlayerContextProvider>

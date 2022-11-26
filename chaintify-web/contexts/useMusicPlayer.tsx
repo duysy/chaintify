@@ -1,4 +1,4 @@
-import { createContext, ReactChild, useContext, useState, createRef, useEffect } from "react";
+import { createContext, ReactChild, useContext, useState, createRef, useEffect, useRef, RefObject } from "react";
 export type MusicPlayerContextValue = {
   playerRef: any;
   setPlayerRef: any;
@@ -13,8 +13,10 @@ export type MusicPlayerContextValue = {
   play: () => void;
   pause: () => void;
   isPlay: any;
-  setListSongMusicPlayer: any;
   listSongMusicPlayer: any;
+  setListSongMusicPlayer: any;
+  playListRef: any;
+  setListMusicPlayer: any;
 };
 export const MusicPlayer = createContext<MusicPlayerContextValue>({} as MusicPlayerContextValue);
 
@@ -31,33 +33,17 @@ const fakeSongs = [
     path: "https://gateway.pinata.cloud/ipfs/Qmf6QpZ4ifmEPHFGZE1bFvwfJ5wkNgQEuAZEAr1kp1TiaU",
     name: "Anh sai roi 2",
   },
-  {
-    path: "https://gateway.pinata.cloud/ipfs/QmeHpB14tRGr8546orR5NCvrJeafHb33QgstCfW1YGJq69",
-    name: "Anh sai roi 3",
-  },
-  {
-    path: "https://gateway.pinata.cloud/ipfs/QmQYQ26DnWQb76V3PqkQjNvrTkpZWHGdUGhDQ3BQQQH1gC",
-    name: "Anh sai roi 4",
-  },
-  {
-    path: "https://gateway.pinata.cloud/ipfs/QmX7hDT4XR8qzfhAGWM28jbyW5YMMxdRPgUAQ9j69vZ3p5",
-    name: "Anh sai roi 5",
-  },
-  {
-    path: "https://gateway.pinata.cloud/ipfs/QmeHmeiLVY1hTJAvdKEGuDiLXupEZQYsrRGQjse1JyrQs2",
-    name: "Anh sai roi 6",
-  },
-  {
-    path: "https://gateway.pinata.cloud/ipfs/QmXb1PAEctNgUXDUzgWCretV8YAqpyE1V5FeTPCz5h9ELJ",
-    name: "Anh sai roi 7",
-  },
 ];
 const MusicPlayerContextProvider = ({ children }: Props) => {
   const [playerRef, setPlayerRef] = useState<React.Ref<any>>();
   const [hidden, setHidden] = useState(false);
   const [isPlay, setIsPlay] = useState(false);
-  const [listSongMusicPlayer, setListSongMusicPlayer] = useState([]);
   const [indexSongPlaylist, setIndexSongPlaylist] = useState(0);
+  const [listSongMusicPlayer, setListSongMusicPlayer] = useState([]);
+  const playListRef: any = useRef({
+    index: 0,
+    list: [],
+  });
   const onPlay = () => {
     console.log("onPlay");
     setIsPlay(true);
@@ -69,6 +55,15 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
   const onEnded = () => {
     console.log("onEnded");
     onClickNext();
+  };
+
+  const setListMusicPlayer = (listSongMusicPlayer_: any) => {
+    setListSongMusicPlayer(listSongMusicPlayer_);
+    setIndexSongPlaylist(0);
+    setTimeout(() => {
+      play();
+      console.log("play");
+    }, 1000);
   };
 
   const onClickNext = () => {
@@ -93,29 +88,22 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
   const pause = () => {
     playerRef?.current?.audio?.current?.pause();
   };
-  useEffect(() => {
-    setTimeout(() => {
-      play();
-    }, 1000);
-  }, [indexSongPlaylist, listSongMusicPlayer]);
 
+  // const play = () => {
+  //   playerRef?.current?.play();
+  // };
+  // const pause = () => {
+  //   playerRef?.current?.pause();
+  // };
   useEffect(() => {
-    setIndexSongPlaylist(0);
-  }, [listSongMusicPlayer]);
-
-  useEffect(() => {
-    if (listSongMusicPlayer.length == 0) {
+    if (listSongMusicPlayer.length <= 0) {
       setHidden(true);
     } else {
       setHidden(false);
-    }
-  }, [listSongMusicPlayer]);
-
-  useEffect(() => {
-    if (indexSongPlaylist > 0) {
       play();
     }
-  }, [indexSongPlaylist]);
+  }, [listSongMusicPlayer, indexSongPlaylist]);
+
   return (
     <MusicPlayer.Provider
       value={{
@@ -128,12 +116,14 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
         onClickNext,
         onClickPrevious,
         onPause,
-        indexSongPlaylist,
         play,
         pause,
         isPlay,
+        indexSongPlaylist,
         setListSongMusicPlayer,
         listSongMusicPlayer,
+        playListRef,
+        setListMusicPlayer,
       }}
     >
       {children}

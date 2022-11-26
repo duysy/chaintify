@@ -1,8 +1,8 @@
 import React from "react";
-import PlayList from "../../views/Playlist";
+import Album from "../../views/Album";
 import { useRouter } from "next/router";
 export default function index() {
   const router = useRouter();
   const { id } = router.query;
-  return <PlayList id={id} />;
+  return <Album id={id} />;
 }

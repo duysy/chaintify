@@ -4,6 +4,7 @@ import Image from "next/image";
 import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
 import CarouselBasic from "../../components/CarouselPlayBasic";
+
 export default function Home() {
   const recently = [
     {
@@ -84,7 +85,7 @@ export default function Home() {
                     <Typography
                       variant="subtitle2"
                       sx={{
-                        color: "rgba(255, 255, 255, 0.5)",
+                        color: "text.primary",
                       }}
                     >
                       Untitled C
@@ -92,7 +93,7 @@ export default function Home() {
                     <Typography
                       variant="subtitle2"
                       sx={{
-                        color: "rgba(255, 255, 255, 0.5)",
+                        color: "text.primary",
                       }}
                     >
                       1 giờ trước

@@ -1,4 +1,4 @@
-import { createContext, ReactChild, useContext, useState } from "react";
+import { createContext, JSXElementConstructor, ReactChild, ReactElement, useContext, useState } from "react";
 import { ThemeProvider, createTheme, ThemeOptions } from "@mui/material/styles";
 import { deepOrange, grey } from "@mui/material/colors";
 export type ThemeContextValue = {
@@ -9,11 +9,13 @@ export type ThemeContextValue = {
 export const ThemeContext = createContext<ThemeContextValue>({} as ThemeContextValue);
 
 type Props = {
-  children: ReactChild;
+  children: string | number | ReactElement<any, string | JSXElementConstructor<any>>;
 };
 
+type TMode = "dark" | "light";
+
 const ThemeContextProvider = ({ children }: Props) => {
-  const [mode, setMode] = useState<"dark" | "light">("dark");
+  const [mode, setMode] = useState<TMode>("dark");
   const dartMode = createTheme({
     palette: {
       mode: mode,
@@ -22,7 +24,7 @@ const ThemeContextProvider = ({ children }: Props) => {
         divider: deepOrange[700],
         background: {
           default: "#1A1E1F",
-          paper: "#1A1E1F",
+          paper: "#212121",
         },
         text: {
           primary: "#FFFFFF",
@@ -36,11 +38,11 @@ const ThemeContextProvider = ({ children }: Props) => {
     palette: {
       mode: mode,
       ...{
-        primary: deepOrange,
+        primary: grey,
         divider: deepOrange[700],
         background: {
           default: "#FFFFFF",
-          paper: deepOrange[900],
+          paper: "#f5f5f5",
         },
         text: {
           primary: "#1A1E1F",

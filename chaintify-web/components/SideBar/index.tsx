@@ -39,6 +39,7 @@ export default function SideBar() {
         sx={{
           height: "100%",
           boxSizing: "box-sizing",
+          padding: "0",
         }}
       >
         {listMenuTop.map((item, index) => {
@@ -48,27 +49,26 @@ export default function SideBar() {
               key={item?.title}
               sx={{
                 color: "text.primary",
+                "&:hover": {
+                  bgcolor: "background.paper",
+                  borderLeft: "2px solid #E8AC24",
+                },
               }}
               onClick={() => {
                 router.push(item?.href);
               }}
             >
-              <Box display="flex" sx={{ padding: "0 15px" }}>
-                <Box display="flex" justifyContent="space-around" alignItems="center" sx={{ flex: 2 }}>
-                  {item?.iconElement}
-                </Box>
-                <Box display="flex" justifyContent="start" alignItems="center" sx={{ flex: 10 }}>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      marginLeft: "1rem",
-                      display: { xs: "none", sm: "block" },
-                    }}
-                  >
-                    {item?.title}
-                  </Typography>
-                </Box>
-              </Box>
+              {item?.iconElement}
+              <Typography
+                variant="button"
+                sx={{
+                  marginLeft: "0.5rem",
+                  display: { xs: "none", sm: "block" },
+                  fontWeight: "500",
+                }}
+              >
+                {item?.title}
+              </Typography>
             </Box>
           );
         })}
@@ -83,8 +83,6 @@ export default function SideBar() {
       sx={{
         bgcolor: "background.default",
         borderRadius: "20px",
-        // width: "fit-content",
-        // height: "100vh",
         height: "100%",
         padding: "1rem 0",
       }}
@@ -112,7 +110,6 @@ export default function SideBar() {
         }}
       >
         <Button
-          startIcon={<Add />}
           sx={{
             width: "80%",
             background: "#E8AC24",
@@ -121,14 +118,17 @@ export default function SideBar() {
             color: "text.primary",
           }}
         >
-          <Typography
-            sx={{
-              textTransform: "none",
-              display: { xs: "none", sm: "block" },
-            }}
-          >
-            Tạo playlist mới
-          </Typography>
+          <>
+            <Add />
+            <Typography
+              sx={{
+                textTransform: "none",
+                display: { xs: "none", sm: "block" },
+              }}
+            >
+              Tạo playlist mới
+            </Typography>
+          </>
         </Button>
       </Box>
       <>

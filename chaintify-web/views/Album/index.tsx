@@ -1,33 +1,36 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Grid, Box, Typography, Button, Stack } from "@mui/material";
-import { FavoriteBorder, MoreHoriz, PlayCircleFilledWhiteOutlined, PauseCircleFilledOutlined } from "@mui/icons-material";
+import { Grid, Box, Checkbox, Typography, Button, Stack } from "@mui/material";
+import { Favorite, MoreVert, PlayCircle, PauseCircle } from "@mui/icons-material";
 
 import Image from "next/image";
 
 import Wrap from "../wrap";
 import MusicList from "../../components/MusicList";
-import { detail as detailPlayList } from "../../apis/models/playlist/get_playlist";
+import { detail as detailAlbum } from "../../apis/extends/album/get_album";
 import { useMusicPlayer } from "../../contexts/useMusicPlayer";
 import { TMusicList } from "../../components/MusicList/types";
 
 type Props = {
   id: string | string[] | undefined;
 };
-export default function PlayList(props: Props) {
+export default function Album(props: Props) {
   const id = props.id;
-  const { setListMusicPlayer, play, pause, isPlay } = useMusicPlayer();
-  const [playlist, setPlaylist] = useState<any | {}>({});
+  const { setListSongMusicPlayer, play, pause, isPlay } = useMusicPlayer();
+  const [album, setAlbum] = useState<any | {}>({});
   const [songs, setSongs] = useState<TMusicList[] | null>(null);
   const handelButtonPlayClick = () => {
-    const listSongMusicPlay_ = playlist.song.map((item: any) => {
+    const listSongMusicPlay_ = album.song.map((item: any) => {
       return {
         ...item,
         ...{ path: `http://127.0.0.1:8000/music/upload/?path=${item.path}` },
       };
     });
+    
     if (listSongMusicPlay_.length > 0) {
-      setListMusicPlayer(listSongMusicPlay_);
+      setListSongMusicPlayer(listSongMusicPlay_);
+      play();
+      console.log("play");
     }
   };
   const handelButtonPauseClick = () => {
@@ -35,18 +38,18 @@ export default function PlayList(props: Props) {
     console.log("pause");
   };
   useEffect(() => {
-    const initPlaylist = async () => {
+    const initAlbum = async () => {
       if (!id) return;
-      const playlist_ = await detailPlayList(+id, { depth: 2 });
-      // console.log(playlist_);
-      setPlaylist(playlist_);
+      const album_ = await detailAlbum(+id, { depth: 2 });
+      console.log(album_);
+      setAlbum(album_);
     };
-    initPlaylist();
+    initAlbum();
   }, [id]);
   useEffect(() => {
     const initSongs = async () => {
-      if (!playlist || Object.keys(playlist).length === 0) return;
-      let songs_: TMusicList[] = playlist.song.map((item: any, index: any) => {
+      if (!album || Object.keys(album).length === 0) return;
+      let songs_: TMusicList[] = album.song.map((item: any, index: any) => {
         return {
           id: item.id,
           imgUrl: "https://picsum.photos/100/100",
@@ -63,7 +66,7 @@ export default function PlayList(props: Props) {
       setSongs(songs_);
     };
     initSongs();
-  }, [playlist]);
+  }, [album]);
   return (
     <Wrap>
       <Grid container spacing={3}>
@@ -79,12 +82,12 @@ export default function PlayList(props: Props) {
               }}
             />
             <Typography
-              variant="h5"
+              variant="h4"
               sx={{
                 color: "text.primary",
               }}
             >
-              {playlist?.name ? playlist.name : "Không có tên bài hát"}
+              {album?.name ? album.name : "Không có tên bài hát"}
             </Typography>
             <Typography
               variant="caption"
@@ -92,12 +95,12 @@ export default function PlayList(props: Props) {
                 color: "text.primary",
               }}
             >
-              {playlist?.description ? playlist.description : "Không có description"}
+              {album?.description ? album.description : "Không có description"}
             </Typography>
             <Box>
               {isPlay ? (
                 <Button
-                  startIcon={<PauseCircleFilledOutlined fontSize="large" />}
+                  startIcon={<PauseCircle fontSize="large" />}
                   sx={{
                     bgcolor: "#E8AC24",
                     borderRadius: "20px",
@@ -112,7 +115,7 @@ export default function PlayList(props: Props) {
                 </Button>
               ) : (
                 <Button
-                  startIcon={<PlayCircleFilledWhiteOutlined fontSize="large" />}
+                  startIcon={<PlayCircle fontSize="large" />}
                   sx={{
                     bgcolor: "#E8AC24",
                     borderRadius: "20px",
@@ -135,10 +138,10 @@ export default function PlayList(props: Props) {
                 sx={{
                   padding: "0.5rem",
                   borderRadius: "10000px",
-                  bgcolor: "background.paper",
+                  bgcolor: "#333333",
                 }}
               >
-                <FavoriteBorder
+                <Favorite
                   sx={{
                     color: "text.primary",
                   }}
@@ -151,10 +154,10 @@ export default function PlayList(props: Props) {
                 sx={{
                   padding: "0.5rem",
                   borderRadius: "10000px",
-                  bgcolor: "background.paper",
+                  bgcolor: "#333333",
                 }}
               >
-                <MoreHoriz
+                <MoreVert
                   sx={{
                     color: "text.primary",
                   }}
@@ -171,7 +174,7 @@ export default function PlayList(props: Props) {
               padding: "1rem 0",
             }}
           >
-            {playlist?.isPublic ? "Album này được public, mọi người có thể truy cập" : "Album này được không public, mọi người không thể truy cập"}
+            {album?.isPublic ? "Album này được public, mọi người có thể truy cập" : "Album này được không public, mọi người không thể truy cập"}
           </Typography>
           {/* <Like songs={songs} /> */}
           {songs && <MusicList list={songs} />}

@@ -4,9 +4,10 @@ import { TextField, Dialog, Typography, Button, Box, Stack, TextareaAutosize, Au
 
 import { useRouter } from "next/router";
 
-import { create as createFile } from "../../apis/file/post_file";
 import { list as listArtist } from "../../apis/models/artist/get_artist";
 import { create as createAlbum, TCreateAlbum } from "../../apis/models/album/post_album";
+
+import FileUpload from "../../components/FileUpload";
 const style = {
   width: "500px",
   height: "auto",
@@ -19,10 +20,11 @@ type Props = {
   setOpen: (state: boolean) => void;
 };
 export default function PopupCreateAlbum(props: Props) {
-  const [selectedFile, setSelectedFile] = React.useState(null);
   const [artists, setArtists] = useState([]);
   const [createSong, setCreateSong] = useState<TCreateAlbum | {}>({});
   const [artistsPicker, setArtistsPicker] = useState<any[]>([]);
+  const [pathImage, setPathImage] = useState(null);
+
   const handleClose = () => props.setOpen(false);
   const handleTextFieldNameChange = (event: any) => {
     const name = event.target.value;
@@ -46,23 +48,11 @@ export default function PopupCreateAlbum(props: Props) {
     ];
     setArtistsPicker(artistsPicker_);
   };
+
   useEffect(() => {
-    const artistIds_ = artistsPicker.map((item: any) => {
-      return item.id;
-    });
-    const createSong_ = { ...createSong, ...{ artist: artistIds_ } };
+    const createSong_ = { ...createSong, ...{ cover: pathImage } };
     setCreateSong(createSong_);
-  }, [artistsPicker]);
-
-  const handleFileSelect = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const handleSetPathFile = (cover: String) => {
-    const createSong_ = { ...createSong, ...{ cover: cover } };
-    setCreateSong(createSong_);
-  };
-
+  }, [pathImage]);
   const handleTextFieldDescriptionChange = (event: any) => {
     const description = event.target.value;
     const createSong_ = { ...createSong, ...{ description: description } };
@@ -79,29 +69,18 @@ export default function PopupCreateAlbum(props: Props) {
     const createSong_ = { ...createSong, ...addMore };
     console.log(createSong_);
 
-    // const response = await createAlbum(createSong_ as TCreateAlbum);
-    // if (response) {
-    //   alert("Up load success new song");
-    // }
+    const response = await createAlbum(createSong_ as TCreateAlbum);
+    if (response) {
+      alert("Create album success");
+    }
   };
   useEffect(() => {
-    const autoUploadFile = async () => {
-      if (!selectedFile) return;
-      const formData = new FormData();
-      formData.append("file_uploaded", selectedFile);
-
-      const response = await createFile({ formData: formData });
-      if (response) {
-        alert("Success");
-        const path = response.name;
-        console.log(path);
-        handleSetPathFile(path);
-      } else {
-        alert("Fail");
-      }
-    };
-    autoUploadFile();
-  }, [selectedFile]);
+    const artistIds_ = artistsPicker.map((item: any) => {
+      return item.id;
+    });
+    const createSong_ = { ...createSong, ...{ artist: artistIds_ } };
+    setCreateSong(createSong_);
+  }, [artistsPicker]);
 
   useEffect(() => {
     const initAlbums = async () => {
@@ -157,7 +136,9 @@ export default function PopupCreateAlbum(props: Props) {
           <Box>
             {artistsPicker &&
               artistsPicker.map((item) => {
-                return <Chip avatar={<Avatar>{`${item.id}`}</Avatar>} label={`${item.name}`} />;
+                const id = item.id;
+                const name = item.name;
+                return <Chip key={id} avatar={<Avatar>{`${id}`}</Avatar>} label={`${name}`} sx={{ margin: "2px" }} />;
               })}
           </Box>
 
@@ -172,7 +153,7 @@ export default function PopupCreateAlbum(props: Props) {
               renderInput={(params) => <TextField {...params} label="Artist" variant="standard" />}
             />
           )}
-          <TextField name="file_uploaded" type="file" onChange={handleFileSelect} />
+          <FileUpload setPath={setPathImage} />
           <TextareaAutosize onChange={handleTextFieldDescriptionChange} aria-label="empty textarea" placeholder="Description" style={{ width: "100%", height: "10rem" }} />
           <Button type="button" onClick={handleSubmit}>
             Submit

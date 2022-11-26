@@ -4,10 +4,11 @@ import { TextField, Dialog, Typography, Button, Box, Stack, TextareaAutosize, Au
 
 import { useRouter } from "next/router";
 
-import { create as createFile } from "../../apis/file/post_file";
 import { list as listAlbum } from "../../apis/models/album/get_album";
 import { list as listArtist } from "../../apis/models/artist/get_artist";
 import { create as createSongApi, TCreateSong } from "../../apis/models/song/post_song";
+
+import FileUpload from "../../components/FileUpload";
 const style = {
   width: "500px",
   height: "auto",
@@ -20,10 +21,10 @@ type Props = {
   setOpen: (state: boolean) => void;
 };
 export default function PopupMusicUpLoad(props: Props) {
-  const [selectedFile, setSelectedFile] = React.useState(null);
   const [albums, setAlbums] = useState([]);
   const [artists, setArtists] = useState([]);
   const [createSong, setCreateSong] = useState<TCreateSong | {}>({});
+  const [pathSong, setPathSong] = useState([]);
 
   const handleClosePopUp = () => props.setOpen(false);
   const handleTextFieldNameChange = (event: any) => {
@@ -45,15 +46,11 @@ export default function PopupMusicUpLoad(props: Props) {
     const createSong_ = { ...createSong, ...{ artist: [artist] } };
     setCreateSong(createSong_);
   };
-  const handleFileSelect = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-  };
 
-  const handleSetPathFile = (path: String) => {
-    const createSong_ = { ...createSong, ...{ path: path } };
+  useEffect(() => {
+    const createSong_ = { ...createSong, ...{ path: pathSong } };
     setCreateSong(createSong_);
-  };
-
+  }, [pathSong]);
   const handleTextFieldLyricsChange = (event: any) => {
     const lyrics = event.target.value;
     const createSong_ = { ...createSong, ...{ lyrics: lyrics } };
@@ -74,26 +71,8 @@ export default function PopupMusicUpLoad(props: Props) {
     if (response) {
       alert("Up load success new song");
     }
-    handleClosePopUp()
+    handleClosePopUp();
   };
-  useEffect(() => {
-    const autoUploadFile = async () => {
-      if (!selectedFile) return;
-      const formData = new FormData();
-      formData.append("file_uploaded", selectedFile);
-
-      const response = await createFile({ formData: formData });
-      if (response) {
-        alert("Success");
-        const path = response.name;
-        console.log(path);
-        handleSetPathFile(path);
-      } else {
-        alert("Fail");
-      }
-    };
-    autoUploadFile();
-  }, [selectedFile]);
 
   useEffect(() => {
     const initAlbums = async () => {
@@ -184,7 +163,7 @@ export default function PopupMusicUpLoad(props: Props) {
               renderInput={(params) => <TextField {...params} label="Artist" variant="standard" />}
             />
           )}
-          <TextField name="file_uploaded" type="file" onChange={handleFileSelect} />
+          <FileUpload setPath={setPathSong} />
           <TextareaAutosize onChange={handleTextFieldLyricsChange} aria-label="empty textarea" placeholder="Lyrics" style={{ width: "100%", height: "10rem" }} />
           <Button type="button" onClick={handleSubmit}>
             Submit

@@ -4,7 +4,7 @@ import { TextField, Dialog, Checkbox, Typography, Button, Box, Stack, Autocomple
 
 import { useRouter } from "next/router";
 import { list as listPlaylist } from "../../apis/models/playlist/get_playlist";
-import { update as updatePlaylist, TUpdate } from "../../apis/models/playlist/put_playlist";
+import { update as updatePlaylist, TUpdatePlayList } from "../../apis/models/playlist/put_playlist";
 const style = {
   width: 400,
   minHeight: 400,
@@ -26,7 +26,7 @@ export default function PopupAddMusicToPlaylist(props: Props) {
     const idPlayList: any = value.id;
 
     const listSong = props.listSong;
-    const playlist_: TUpdate = { name: label, song: [...listSong] };
+    const playlist_: TUpdatePlayList = { name: label, song: [...listSong] };
 
     console.log(idPlayList, value);
 
