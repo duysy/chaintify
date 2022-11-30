@@ -10,28 +10,25 @@ import MusicList from "../../components/MusicList";
 import { detail as detailAlbum } from "../../apis/extends/album/get_album";
 import { useMusicPlayer } from "../../contexts/useMusicPlayer";
 import { TMusicList } from "../../components/MusicList/types";
-
+import config from "../../config";
 type Props = {
   id: string | string[] | undefined;
 };
 export default function Album(props: Props) {
   const id = props.id;
-  const { setListSongMusicPlayer, play, pause, isPlay } = useMusicPlayer();
+  const { setListMusicPlayer, play, pause, isPlay } = useMusicPlayer();
   const [album, setAlbum] = useState<any | {}>({});
   const [songs, setSongs] = useState<TMusicList[] | null>(null);
   const handelButtonPlayClick = () => {
     const listSongMusicPlay_ = album.song.map((item: any) => {
       return {
         ...item,
-        ...{ path: `http://127.0.0.1:8000/music/upload/?path=${item.path}` },
+        ...{ path: `${config.baseMedia}${item.path}` },
       };
     });
-    
-    if (listSongMusicPlay_.length > 0) {
-      setListSongMusicPlayer(listSongMusicPlay_);
-      play();
-      console.log("play");
-    }
+    setListMusicPlayer(listSongMusicPlay_);
+    play();
+    console.log("play");
   };
   const handelButtonPauseClick = () => {
     pause();
@@ -52,10 +49,10 @@ export default function Album(props: Props) {
       let songs_: TMusicList[] = album.song.map((item: any, index: any) => {
         return {
           id: item.id,
-          imgUrl: "https://picsum.photos/100/100",
           name: item.name,
+          cover: `${config.baseMedia}${item.cover}`,
           artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
-          album: item.album?.name,
+          album: album?.name,
           time: item.length,
           favorite: true,
           checkBoxStatus: false,
@@ -73,16 +70,17 @@ export default function Album(props: Props) {
         <Grid item xs={12} md={4}>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginTop="5rem">
             <Image
-              src="https://picsum.photos/500/500"
+              src={`${config.baseMedia}${album.cover}`}
               alt="Image album"
               width={300}
               height={300}
               style={{
                 borderRadius: "20px",
+                objectFit: "cover"
               }}
             />
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 color: "text.primary",
               }}
@@ -138,7 +136,7 @@ export default function Album(props: Props) {
                 sx={{
                   padding: "0.5rem",
                   borderRadius: "10000px",
-                  bgcolor: "#333333",
+                  bgcolor: "background.paper",
                 }}
               >
                 <Favorite
@@ -154,7 +152,7 @@ export default function Album(props: Props) {
                 sx={{
                   padding: "0.5rem",
                   borderRadius: "10000px",
-                  bgcolor: "#333333",
+                  bgcolor: "background.paper",
                 }}
               >
                 <MoreVert

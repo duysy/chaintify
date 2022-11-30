@@ -27,7 +27,7 @@ export default function SideBar() {
     {
       iconElement: <Bookmark />,
       title: "Theo Dõi",
-      href: "/mymusic",
+      href: "/artist",
     },
   ];
   const ListLink = () => {

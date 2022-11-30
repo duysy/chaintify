@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import styles from "./CarouselBoxCircle.module.css";
 
 import { Favorite, MoreVert, Shuffle, FilterDrama } from "@mui/icons-material";
@@ -10,82 +10,87 @@ import { useRouter } from "next/navigation";
 import { useMusicPlayer } from "../../../../contexts/useMusicPlayer";
 
 type TProps = {
-  list: TPlaylist[];
+  list: TCarouselBoxCircle[];
 };
 
-type TPlaylist = {
-  name: String;
-  imgUrl: String;
-  clickHrefTo: String;
+export type TCarouselBoxCircle = {
+  name: string;
+  cover: string;
+  clickHrefTo: string;
 };
 
 export default function CarouselBoxCircle(props: TProps) {
-  const list = props.list;
+  const list: TCarouselBoxCircle[] = props.list;
   const router = useRouter();
   const { play, pause, isPlay } = useMusicPlayer();
-  const handelOnClick = (to: String) => {
+  const handelOnClick = (to: string) => {
     if (!to) return;
-    router.push(to.toString());
+    router.push(to);
   };
-  return (
-    <Stack direction="row" spacing={3}>
-      {list.map((item: any, index: any) => {
-        return (
-          <Box
-            key={index}
-            position="relative"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              width: 150,
-              height: 200,
-            }}
-            onClick={() => {
-              handelOnClick(item.clickHrefTo);
-            }}
-          >
+  const MainContent: any = () => {
+    return (
+      <Stack direction="row" spacing={3}>
+        {list.map((item: any, index: any) => {
+          return (
             <Box
+              key={index}
+              position="relative"
               display="flex"
+              flexDirection="column"
               justifyContent="center"
               alignItems="center"
               sx={{
-                position: "absolute",
-                top: 120,
-                right: 5,
-                color: "black",
-                bgcolor: "background.paper",
-                borderRadius: "1000px",
-                padding: "5px",
+                width: 150,
+                height: 200,
+              }}
+              onClick={() => {
+                handelOnClick(item.clickHrefTo);
               }}
             >
-              <Shuffle
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
                 sx={{
-                  color: "text.primary",
+                  position: "absolute",
+                  top: 120,
+                  right: 5,
+                  color: "black",
+                  bgcolor: "background.paper",
+                  borderRadius: "1000px",
+                  padding: "5px",
+                }}
+              >
+                <Shuffle
+                  sx={{
+                    color: "text.primary",
+                  }}
+                />
+              </Box>
+              <Image
+                src={item.cover}
+                alt="Picture of the author"
+                width={150}
+                height={150}
+                style={{
+                  borderRadius: "1000px",
+                  objectFit: "cover"
                 }}
               />
+              <Typography
+                sx={{
+                  color: "text.primary",
+                  marginTop: "10px",
+                }}
+              >
+                {item.name}
+              </Typography>
             </Box>
-            <Image
-              src={item.imgUrl}
-              alt="Picture of the author"
-              width={150}
-              height={150}
-              style={{
-                borderRadius: "1000px",
-              }}
-            />
-            <Typography
-              sx={{
-                color: "text.primary",
-                marginTop: "10px",
-              }}
-            >
-              {item.name}
-            </Typography>
-          </Box>
-        );
-      })}
-    </Stack>
-  );
+          );
+        })}
+      </Stack>
+    );
+  };
+  if (list && list.length > 0) return <MainContent />;
+  return <Typography sx={{ color: "text.primary" }}>Ops,Không có data</Typography>;
 }

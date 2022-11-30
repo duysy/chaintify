@@ -1,13 +1,15 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { TextField, Dialog, Typography, Button, Box, Stack, TextareaAutosize, Autocomplete, Chip, Avatar } from "@mui/material";
+import { TextField, Dialog, Typography, Button, Box, Stack, TextareaAutosize, Autocomplete, Chip, Avatar, Checkbox } from "@mui/material";
 
 import { useRouter } from "next/router";
-
+import Image from "next/image";
 import { list as listArtist } from "../../apis/models/artist/get_artist";
 import { create as createAlbum, TCreateAlbum } from "../../apis/models/album/post_album";
-
+import config from "../../config";
 import FileUpload from "../../components/FileUpload";
+import { useQuery } from "react-query";
+
 const style = {
   width: "500px",
   height: "auto",
@@ -20,10 +22,21 @@ type Props = {
   setOpen: (state: boolean) => void;
 };
 export default function PopupCreateAlbum(props: Props) {
+  const router = useRouter();
+
   const [artists, setArtists] = useState([]);
   const [createSong, setCreateSong] = useState<TCreateAlbum | {}>({});
   const [artistsPicker, setArtistsPicker] = useState<any[]>([]);
   const [pathImage, setPathImage] = useState(null);
+  const [isPublic, setIsPublic] = useState(true);
+
+  React.useEffect(() => {
+    // setArtists([]);
+    // setCreateSong({});
+    // setArtistsPicker([]);
+    // setPathImage(null);
+    // setIsPublic(true);
+  }, [props.open]);
 
   const handleClose = () => props.setOpen(false);
   const handleTextFieldNameChange = (event: any) => {
@@ -34,8 +47,8 @@ export default function PopupCreateAlbum(props: Props) {
 
   const handleAutoCompleteArtistChange = (event: any, value: any) => {
     if (!value) return;
-    const artistId: Number = value.id;
-    const artistLabel: Number = value.label;
+    const artistId: number = value.id;
+    const artistLabel: number = value.label;
 
     const artistsPicker_: any[] = [
       ...artistsPicker,
@@ -60,19 +73,20 @@ export default function PopupCreateAlbum(props: Props) {
   };
 
   const handleSubmit = async () => {
-    const addMore = {
-      length: 1,
-      track: 1,
-      disc: 1,
-      mtime: 1,
-    };
-    const createSong_ = { ...createSong, ...addMore };
-    console.log(createSong_);
-
-    const response = await createAlbum(createSong_ as TCreateAlbum);
-    if (response) {
-      alert("Create album success");
+    const createSong_ = { ...createSong, ...{ isPublic: isPublic } };
+    // console.log(createSong_)
+    const res = await createAlbum(createSong_ as TCreateAlbum);
+    if (res) {
+      console.log("createAlbum", res);
+      handleClose();
+      router.push(`/album/${res.id}`);
     }
+  };
+
+  const handelCheckBoxIsPrivateChange = (event: any) => {
+    const isPublic_ = event.target.checked;
+    console.log(isPublic_);
+    setIsPublic(isPublic_);
   };
   useEffect(() => {
     const artistIds_ = artistsPicker.map((item: any) => {
@@ -82,25 +96,26 @@ export default function PopupCreateAlbum(props: Props) {
     setCreateSong(createSong_);
   }, [artistsPicker]);
 
-  useEffect(() => {
-    const initAlbums = async () => {
-      let artists_ = await listArtist({});
-      artists_ = artists_.results;
-      artists_ = artists_.map((item: any, index: any) => {
-        return {
-          id: item.id,
-          name: item.name,
-        };
-      });
-
-      setArtists(artists_);
-      console.log("artists", artists_);
-    };
-    initAlbums();
-  }, []);
+  const resArtist = useQuery(
+    ["listArtist_0_1000_0"],
+    async () => {
+      return await listArtist({ depth: 0, limit: 1000, offset: 0 });
+    },
+    {
+      onSuccess: (data) => {
+        let artist_ = data.results.map((item: any, index: any) => {
+          return {
+            id: item.id,
+            name: item.name,
+          };
+        });
+        setArtists(artist_);
+      },
+    }
+  );
 
   return (
-    <Dialog onClose={handleClose} open={props.open} sx={{ zIndex: 200000 }} keepMounted={false}>
+    <Dialog onClose={handleClose} open={props.open} sx={{ zIndex: 2000 }} keepMounted={false}>
       <Box
         sx={style}
         style={{
@@ -153,8 +168,30 @@ export default function PopupCreateAlbum(props: Props) {
               renderInput={(params) => <TextField {...params} label="Artist" variant="standard" />}
             />
           )}
-          <FileUpload setPath={setPathImage} />
-          <TextareaAutosize onChange={handleTextFieldDescriptionChange} aria-label="empty textarea" placeholder="Description" style={{ width: "100%", height: "10rem" }} />
+          <Box
+            display={"flex"}
+            flexDirection="column"
+            alignItems={"center"}
+            justifyContent={"space-around"}
+            sx={{ border: "1px solid", borderColor: "text.primary", padding: "1rem 0", margin: "1rem 0" }}
+          >
+            {pathImage && <Image width={200} height={200} alt={"image pathImage"} objectFit={"cover"} src={`${config.baseMedia}${pathImage}`} />}
+            <br />
+            <FileUpload setPath={setPathImage} accept=".png, .gif, .jpeg" title={"Pick a image"} />
+          </Box>
+
+          <TextareaAutosize
+            onChange={handleTextFieldDescriptionChange}
+            aria-label="empty textarea"
+            placeholder="Description"
+            style={{ width: "100%", height: "10rem" }}
+          />
+          <Stack direction="row">
+            <Checkbox value={isPublic} defaultChecked={true} onChange={handelCheckBoxIsPrivateChange} />
+            <Typography sx={{ textAlign: "center", lineHeight: "3rem", height: "3rem" }} variant="inherit">
+              Mọi người có thể truy cập album này
+            </Typography>
+          </Stack>
           <Button type="button" onClick={handleSubmit}>
             Submit
           </Button>

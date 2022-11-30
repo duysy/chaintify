@@ -1,9 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import styles from "./Slide.module.css";
-import { Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
-
+import Image from "next/image";
 const itemData = [
   {
     img: "https://picsum.photos/300/200",
@@ -77,20 +77,22 @@ export default function Slide() {
         }}
         onClick={back}
       />
-      <Stack sx={{ width: "100%", height: 180 }} direction="row" spacing={5}>
+      <Grid container direction="row" justifyContent="center" alignItems="center" sx={{ width: "100%", height: "auto" }} spacing={0}>
         {itemData.slice(from, to).map((item) => (
-          <img
-            key={item?.img}
-            width="100%"
-            src={item?.img}
-            alt={item?.title}
-            loading="lazy"
-            style={{
-              borderRadius: "25px",
-            }}
-          />
+          <Grid display="flex" justifyContent="center" alignItems="center" item xs={12} sm={6} md={4} key={item?.img as string}>
+            <Image
+              width={300}
+              height={180}
+              alt={item?.title as string}
+              src={item?.img as string}
+              style={{
+                borderRadius: "25px",
+                objectFit: "cover"
+              }}
+            />
+          </Grid>
         ))}
-      </Stack>
+      </Grid>
       <NavigateNext
         sx={{
           position: "absolute",

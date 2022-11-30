@@ -2,14 +2,7 @@ import React from "react";
 import styles from "./LikeTab.module.css";
 
 import { Favorite, MoreVert } from "@mui/icons-material";
-import {
-  Grid,
-  Stack,
-  Container,
-  Box,
-  Typography,
-  Checkbox,
-} from "@mui/material";
+import { Grid, Stack, Container, Box, Typography, Checkbox } from "@mui/material";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -57,12 +50,13 @@ export default function LikeSongTab(props: any) {
                 }}
               >
                 <Image
-                  src={item.imgUrl}
+                  src={item.cover}
                   alt="Picture of the author"
                   width={40}
                   height={40}
                   style={{
                     borderRadius: "1px",
+                    objectFit: "cover"
                   }}
                 />
               </Grid>

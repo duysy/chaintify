@@ -1,109 +1,72 @@
 import { Grid, Stack, Container, Box, Typography } from "@mui/material";
+import { useState } from "react";
 import Slide from "../../components/Slide";
 import Image from "next/image";
 import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
 import CarouselBasic from "../../components/CarouselPlayBasic";
-
+import {  listPublic as listPublicPublic} from "../../apis/models/album/get_album";
+import { list as listSong } from "../../apis/models/song/get_song";
+import { useQuery } from "react-query";
+import config from "../../config";
+import { TCarouselPlayBasic } from "../../components/CarouselPlayBasic";
+import NewBoxList from "./components/NewListBox";
+import { TNewBoxList } from "./components/NewListBox";
 export default function Home() {
-  const recently = [
-    {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/301/200",
-      url: "artist",
+  const [albums, setAlbums] = useState<TCarouselPlayBasic[]>([]);
+  const [songs, setSongs] = useState<TNewBoxList[]>([]);
+  const queryAlbum = useQuery(
+    ["listPublicPublic_0_5_0"],
+    async () => {
+      return await listPublicPublic({ depth: 0, limit: 5, offset: 0 });
     },
     {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/302/200",
-      url: "artist",
+      onSuccess: (data) => {
+        let albums = data.results.map((item: any, index: any) => {
+          return {
+            name: item.name,
+            cover: `${config.baseMedia}${item.cover}`,
+            clickHrefTo: `/album/${item.id}`,
+          } as TCarouselPlayBasic;
+        });
+        setAlbums(albums);
+      },
+    }
+  );
+  const querySong = useQuery(
+    ["listAlbum_1_6_0"],
+    async () => {
+      return await listSong({ depth: 1, limit: 6, offset: 0 });
     },
     {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/303/200",
-      url: "artist",
-    },
-    {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/304/200",
-      url: "artist",
-    },
-    {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/305/200",
-      url: "artist",
-    },
-    {
-      name: "Top chart",
-      imgUrl: "https://picsum.photos/306/200",
-      url: "artist",
-    },
-  ];
-  const news = [...recently];
-  const albums = [...recently];
+      onSuccess: (data) => {
+        let songs = data.results.map((item: any, index: any) => {
+          const dateNow = Date.now();
+          const updated_at = new Date(item.updated_at).getTime();
+          let datetime = (Math.abs(dateNow - updated_at) / 3600000).toFixed(0);
+          datetime = +datetime < 1 ? "Vài phút trước" : `${datetime} giờ trước`;
+          return {
+            id: item.id,
+            cover: `${config.baseMedia}${item.cover}`,
+            name: item.name,
+            artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
+            updated_at: datetime,
+          } as TNewBoxList;
+        });
+        setSongs(songs);
+      },
+    }
+  );
   return (
     <Wrap>
       <Slide />
       <Box>
         <SectionTitle>Gần đây</SectionTitle>
-        <CarouselBasic list={recently} />
+        <CarouselBasic list={albums} />
       </Box>
       <Box>
         <SectionTitle>Mới phát hành</SectionTitle>
-        <Grid container spacing={2}>
-          {news.map((item, index) => {
-            return (
-              <Grid item xs={6} md={4} key={index}>
-                <Box
-                  display="flex"
-                  justifyContent="start"
-                  alignItems="center"
-                  sx={{
-                    padding: "10px",
-                    width: "100%",
-                    background: "rgba(255, 255, 255, 0.15)",
-                    boxShadow: "0px 1px 8px rgba(0, 0, 0, 0.1)",
-                    backdropFilter: "blur(5px)",
-                    /* Note: backdrop-filter has minimal browser support */
-                    borderRadius: "15px",
-                  }}
-                >
-                  <Image
-                    src={item.imgUrl}
-                    alt="Picture of the author"
-                    width={65}
-                    height={65}
-                    style={{
-                      borderRadius: "15px",
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      marginLeft: "1rem",
-                    }}
-                  >
-                    <Typography variant="subtitle1">Matias Bagato</Typography>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        color: "text.primary",
-                      }}
-                    >
-                      Untitled C
-                    </Typography>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        color: "text.primary",
-                      }}
-                    >
-                      1 giờ trước
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <NewBoxList list={songs} />
       </Box>
       <Box>
         <SectionTitle>Album</SectionTitle>

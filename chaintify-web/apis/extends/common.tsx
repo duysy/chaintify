@@ -5,6 +5,6 @@ export default axios.create({
   headers: {
     // Accept: "application/json",
     // "Content-type": "application/json",
-    Authorization: "Token b10462d9e5879b4a6a9137310bcdf212dcf257a3",
+    // Authorization: "Token b10462d9e5879b4a6a9137310bcdf212dcf257a3",
   },
 });

@@ -1,10 +1,10 @@
 export type TMusicList = {
-  id: String | Number;
+  id: string | number;
   checkBoxStatus: Boolean | false;
-  imgUrl: String;
-  name: String;
-  artist: String;
-  album: String;
-  time: String;
+  name: string;
+  cover: string;
+  artist: string;
+  album: string;
+  time: string;
   favorite: Boolean;
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import config from "../../config";
 
 import { Box, Typography, Stack, Grid, Checkbox, Button } from "@mui/material";
 import Image from "next/image";
@@ -8,92 +9,97 @@ import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
 import CarouselBasic from "../../components/CarouselPlayBasic";
 import MusicList from "../../components/MusicList";
-import CarouselPlayAlbum from "./components/CarouselPlayAlbum";
-
-import { TMusicList } from "../../components/MusicList/types";
-
 import LikeSongTab from "./components/LikeSongTab";
 import UploadTab from "./components/UploadTab";
 import CarouselBoxCircle from "./components/CarouselBoxCircle";
+import CarouselPlayAlbum from "./components/CarouselPlayAlbum";
+import { TMusicList } from "../../components/MusicList/types";
 
 import { list as listAlbum } from "../../apis/models/album/get_album";
 import { list as listPlaylist } from "../../apis/models/playlist/get_playlist";
 import { list as listSong } from "../../apis/models/song/get_song";
+import { useQuery } from "react-query";
+
+import { TCarouselBoxCircle } from "./components/CarouselBoxCircle";
+import { TCarouselPlayBasic } from "../../components/CarouselPlayBasic";
+import MyLoader from "./Loading";
 
 type TTabView = "likeSongTab" | "UploadTab";
-type TAlbum = {
-  name: String;
-  imgUrl: String;
-  url: String;
-};
 
-type TPlaylist = {
-  name: String;
-  imgUrl: String;
-  clickHrefTo: String;
-};
 export default function MyMusic() {
-  const [tab, setTab] = useState<TTabView>("likeSongTab");
-
-  const [albums, setAlbums] = useState<TAlbum[]>();
-  const [playlists, setPlaylists] = useState<TPlaylist[]>();
+  const [albums, setAlbums] = useState<TCarouselPlayBasic[]>();
+  const [playlists, setPlaylists] = useState<TCarouselBoxCircle[]>();
   const [songs, setSongs] = useState<TMusicList[]>();
 
-  useEffect(() => {
-    const initPlaylists = async () => {
-      let playlists_ = await listPlaylist({ limit: 5, offset: 0 });
-      playlists_ = playlists_.results;
-      playlists_ = playlists_.map((item: any, index: any) => {
-        return {
-          name: item.name,
-          imgUrl: "https://picsum.photos/301/200",
-          clickHrefTo: `/playlist/${item.id}`,
-        };
-      });
+  const [tab, setTab] = useState<TTabView>("likeSongTab");
+  const queryPlayList = useQuery(
+    ["listPlaylist_0_5_0"],
+    async () => {
+      return await listPlaylist({ depth: 0, limit: 5, offset: 0 });
+    },
+    {
+      onSuccess: (data: any) => {
+        let playlists = data.results.map((item: any, index: any) => {
+          return {
+            name: item.name,
+            cover: `${config.baseMedia}${item.cover}`,
+            clickHrefTo: `/playlist/${item.id}`,
+          } as TCarouselBoxCircle;
+        });
+        setPlaylists(playlists);
+      },
+    }
+  );
+  const queryAlbum = useQuery(
+    ["listAlbum_0_5_0"],
+    async () => {
+      return await listAlbum({ depth: 0, limit: 5, offset: 0 });
+    },
+    {
+      onSuccess: (data: any) => {
+        let albums = data.results.map((item: any, index: any) => {
+          return {
+            name: item.name,
+            cover: `${config.baseMedia}${item.cover}`,
+            clickHrefTo: `/album/${item.id}`,
+          } as TCarouselPlayBasic;
+        });
+        setAlbums(albums);
+      },
+    }
+  );
+  const querySong = useQuery(
+    ["listAlbum_1_0_0"],
+    async () => {
+      return await listSong({ depth: 1, limit: 1000, offset: 0 });
+    },
+    {
+      onSuccess: (data: any) => {
+        let songs = data.results.map((item: any, index: any) => {
+          return {
+            id: item.id,
+            cover: `${config.baseMedia}${item.cover}`,
+            name: item.name,
+            artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
+            album: item.album?.name,
+            time: item.length,
+            favorite: true,
+            checkBoxStatus: false,
+          } as TMusicList;
+        });
+        setSongs(songs);
+      },
+    }
+  );
 
-      setPlaylists(playlists_);
-      console.log("playlists", playlists_);
-    };
-    initPlaylists();
-  }, []);
-  useEffect(() => {
-    const initAlbums = async () => {
-      let albums_ = await listAlbum({ limit: 5, offset: 0 });
-      albums_ = albums_.results;
-      albums_ = albums_.map((item: any, index: any) => {
-        return {
-          name: item.name,
-          imgUrl: "https://picsum.photos/301/200",
-          url: `/album/${item.id}`,
-        };
-      });
-      setAlbums(albums_);
-      console.log("albums", albums_);
-    };
-    initAlbums();
-  }, []);
-  useEffect(() => {
-    const initSongs = async () => {
-      let songs_ = await listSong({ depth: 1 });
-      songs_ = songs_.results;
-      songs_ = songs_.map((item: any, index: any) => {
-        return {
-          id: item.id,
-          imgUrl: "https://picsum.photos/100/100",
-          name: item.name,
-          artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
-          album: item.album?.name,
-          time: item.length,
-          favorite: true,
-          checkBoxStatus: false,
-        } as TMusicList;
-      });
+  if (queryPlayList.isFetching || queryAlbum.isFetching || querySong.isFetching) {
+    return (
+      <Wrap>
+        <MyLoader />
+      </Wrap>
+    );
+  }
 
-      setSongs(songs_);
-      console.log("songs", songs);
-    };
-    initSongs();
-  }, []);
   const LikeSongTabWrap = () => {
     return <MusicList list={songs as TMusicList[]} />;
   };
@@ -111,11 +117,11 @@ export default function MyMusic() {
       </Box>
       <Box>
         <SectionTitle>Playlist</SectionTitle>
-        {playlists ? <CarouselBoxCircle list={playlists} /> : <h1>Loading</h1>}
+        {queryPlayList.isSuccess ? <CarouselBoxCircle list={playlists as TCarouselBoxCircle[]} /> : <h1>Loading</h1>}
       </Box>
       <Box>
         <SectionTitle>Album</SectionTitle>
-        {albums ? <CarouselPlayAlbum list={albums} /> : <h1>Loading</h1>}
+        {queryAlbum.isSuccess ? <CarouselPlayAlbum list={albums as TCarouselPlayBasic[]} /> : <h1>Loading</h1>}
       </Box>
       <Box>
         <SectionTitle>Bài hát</SectionTitle>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Grid, Box, Typography, Button, Stack } from "@mui/material";
-import { FavoriteBorder, MoreHoriz, PlayCircleFilledWhiteOutlined, PauseCircleFilledOutlined } from "@mui/icons-material";
+import { FavoriteBorder, MoreHoriz, PlayCircleFilledWhiteOutlined, PauseCircleFilledOutlined, Image as ImageIcon } from "@mui/icons-material";
 
 import Image from "next/image";
 
@@ -10,7 +10,7 @@ import MusicList from "../../components/MusicList";
 import { detail as detailPlayList } from "../../apis/models/playlist/get_playlist";
 import { useMusicPlayer } from "../../contexts/useMusicPlayer";
 import { TMusicList } from "../../components/MusicList/types";
-
+import config from "../../config";
 type Props = {
   id: string | string[] | undefined;
 };
@@ -23,12 +23,12 @@ export default function PlayList(props: Props) {
     const listSongMusicPlay_ = playlist.song.map((item: any) => {
       return {
         ...item,
-        ...{ path: `http://127.0.0.1:8000/music/upload/?path=${item.path}` },
+        ...{ path: `${config.baseMedia}${item.path}` },
       };
     });
-    if (listSongMusicPlay_.length > 0) {
-      setListMusicPlayer(listSongMusicPlay_);
-    }
+    setListMusicPlayer(listSongMusicPlay_);
+    play();
+    console.log("play");
   };
   const handelButtonPauseClick = () => {
     pause();
@@ -49,8 +49,8 @@ export default function PlayList(props: Props) {
       let songs_: TMusicList[] = playlist.song.map((item: any, index: any) => {
         return {
           id: item.id,
-          imgUrl: "https://picsum.photos/100/100",
           name: item.name,
+          cover: `${config.baseMedia}${item.cover}`,
           artist: item?.artist && item.artist.map((item: any) => item.name).join("|"),
           album: item.album?.name,
           time: item.length,
@@ -69,15 +69,26 @@ export default function PlayList(props: Props) {
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" marginTop="5rem">
-            <Image
-              src="https://picsum.photos/500/500"
-              alt="Image album"
-              width={300}
-              height={300}
-              style={{
-                borderRadius: "20px",
-              }}
-            />
+            {playlist?.cover ? (
+              <Image
+                src={`${config.baseMedia}${playlist?.cover}`}
+                alt="Image album"
+                width={300}
+                height={300}
+                style={{
+                  borderRadius: "20px",
+                  objectFit: "cover"
+                }}
+              />
+            ) : (
+              <ImageIcon
+                sx={{
+                  width: 300,
+                  height: 300,
+                  color: "text.primary",
+                }}
+              />
+            )}
             <Typography
               variant="h5"
               sx={{

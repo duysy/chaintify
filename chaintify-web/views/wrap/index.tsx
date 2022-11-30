@@ -8,6 +8,7 @@ import MusicPlayerContextProvider, { useMusicPlayer } from "../../contexts/useMu
 import MusicPlay from "../../components/MusicPlayer";
 export default function Wrap(props: any) {
   const { hidden } = useMusicPlayer();
+  const heightValue = 13;
   return (
     <Grid
       container
@@ -35,16 +36,16 @@ export default function Wrap(props: any) {
       <Grid item xs={10} sx={{ height: "10%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <TopNav />
       </Grid>
-      <Grid item xs={2} sx={{ height: `calc(100% - ${hidden ? 10 : 15 + 10}%)` }}>
+      <Grid item xs={2} sx={{ height: `calc(100% - ${hidden ? 10 : heightValue + 10}%)` }}>
         <SideBar />
       </Grid>
-      <Grid item xs={10} sx={{ height: `calc(100% - ${hidden ? 10 : 15 + 10}%)`, overflowY: "scroll", padding: "0 2rem" }}>
+      <Grid item xs={10} sx={{ height: `calc(100% - ${hidden ? 10 : heightValue + 10}%)`, overflowY: "scroll", padding: "0 2rem" }}>
         <Box sx={{ padding: "0 1rem" }}>{props.children}</Box>
       </Grid>
-      <Grid item xs={12} sx={{ height: "15%", display: hidden && "none" }}>
-        {/* <MusicPlayerContextProvider>
-          <MusicPlay />
-        </MusicPlayerContextProvider> */}
+      <Grid item xs={12} sx={{ height: `${heightValue}%`, display: hidden && "none" }}>
+        {/* <MusicPlayerContextProvider> */}
+        {/* <MusicPlay /> */}
+        {/* </MusicPlayerContextProvider> */}
       </Grid>
     </Grid>
   );

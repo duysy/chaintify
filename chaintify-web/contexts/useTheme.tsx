@@ -21,14 +21,14 @@ const ThemeContextProvider = ({ children }: Props) => {
       mode: mode,
       ...{
         primary: grey,
-        divider: deepOrange[700],
+        divider: grey[700],
         background: {
           default: "#1A1E1F",
           paper: "#212121",
         },
         text: {
           primary: "#FFFFFF",
-          secondary: grey[500],
+          secondary: "FFFFFF",
         },
       },
     },
@@ -39,14 +39,14 @@ const ThemeContextProvider = ({ children }: Props) => {
       mode: mode,
       ...{
         primary: grey,
-        divider: deepOrange[700],
+        divider: grey[700],
         background: {
           default: "#FFFFFF",
           paper: "#f5f5f5",
         },
         text: {
           primary: "#1A1E1F",
-          secondary: grey[500],
+          secondary: "1A1E1F",
         },
       },
     },

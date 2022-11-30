@@ -3,14 +3,14 @@ import styles from "./TopNav.module.css";
 
 import { useState } from "react";
 import { Grid, Box, TextField, Paper, Stack, Button } from "@mui/material";
-import { NavigateBefore, NavigateNext, CloudUpload, Search, Settings, Person, DarkMode } from "@mui/icons-material";
+import { NavigateBefore, NavigateNext, CloudUpload, Search, Settings, Person, DarkMode, LightMode } from "@mui/icons-material";
 import PopupMusicUpLoad from "../popups/PopupMusicUpLoad";
 import { useThemeContext } from "../../contexts/useTheme";
 import { useRouter } from "next/router";
 export default function TopNav() {
   const router = useRouter();
   const [openPopUp, setOpenPopUp] = useState(false);
-  const { autoSetMode } = useThemeContext();
+  const { autoSetMode, mode } = useThemeContext();
   const handelUploadClick = () => {
     setOpenPopUp(true);
   };
@@ -23,12 +23,12 @@ export default function TopNav() {
   const handelIconThemeModeClick = () => {
     autoSetMode();
   };
+  const handelIconProfileClick = () => {
+    router.push("/profile");
+  };
   return (
     <>
-      <Grid
-        container
-        spacing={0}
-      >
+      <Grid container spacing={0}>
         <Grid item xs={1}>
           <Stack direction="row" alignItems="center" justifyContent="space-evenly" sx={{ height: "100%" }}>
             <NavigateBefore
@@ -81,11 +81,19 @@ export default function TopNav() {
         <Grid item xs={5}>
           <Stack direction="row" alignItems="center" justifyContent="end" sx={{ height: "100%" }}>
             <Box className={styles.circle} sx={{ bgcolor: "background.default" }} onClick={handelIconThemeModeClick}>
-              <DarkMode
-                sx={{
-                  color: "text.primary",
-                }}
-              />
+              {mode == "dark" ? (
+                <DarkMode
+                  sx={{
+                    color: "text.primary",
+                  }}
+                />
+              ) : (
+                <LightMode
+                  sx={{
+                    color: "text.primary",
+                  }}
+                />
+              )}
             </Box>
 
             <Box className={styles.circle} sx={{ bgcolor: "background.default" }} onClick={handelUploadClick}>
@@ -107,6 +115,7 @@ export default function TopNav() {
                 sx={{
                   color: "text.primary",
                 }}
+                onClick={handelIconProfileClick}
               />
             </Box>
           </Stack>

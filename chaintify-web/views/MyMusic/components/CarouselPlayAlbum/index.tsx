@@ -9,9 +9,16 @@ import { useRouter } from "next/navigation";
 
 import { useMusicPlayer } from "../../../../contexts/useMusicPlayer";
 import PopupCreateAlbum from "../../../../components/popups/PopupCreateAlbum";
-import CarouselPlayBasic from "../../../../components/CarouselPlayBasic";
-export default function CarouselPlayAlbum(props: any) {
-  const list = props.list;
+type TProps = {
+  list: TAlbum[];
+};
+type TAlbum = {
+  name: string;
+  cover: string;
+  clickHrefTo: string;
+};
+export default function CarouselPlayAlbum(props: TProps) {
+  const list: TAlbum[] = props.list;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { play, pause, isPlay } = useMusicPlayer();
@@ -37,25 +44,26 @@ export default function CarouselPlayAlbum(props: any) {
               fontSize: "3rem",
               width: "150px",
               height: "150px",
-              color: "#FFFFFF",
-              border: "1px solid #FFFFFF",
+              color: "text.primary",
+              borderColor: "text.primary",
+              border: "1px solid ",
               borderRadius: "20px",
             }}
           />
         </Box>
-        <nav
-          style={{
-            color: "#FFFFFF",
+        <Typography
+          sx={{
+            color: "text.primary",
           }}
         >
           Tạo album
-        </nav>
+        </Typography>
       </Box>
     );
   };
   return (
     <Stack direction="row" spacing={3}>
-      {list.map((item: any, index: any) => {
+      {list.map((item: TAlbum, index: any) => {
         return (
           <Box
             key={index}
@@ -70,7 +78,7 @@ export default function CarouselPlayAlbum(props: any) {
             onClick={(event) => {
               event.stopPropagation();
               console.log("card click");
-              router.push(item.url);
+              router.push(item?.clickHrefTo as string);
             }}
           >
             <Box position="relative" className={styles.card}>
@@ -90,6 +98,7 @@ export default function CarouselPlayAlbum(props: any) {
                   <PauseCircle
                     sx={{
                       fontSize: "2.5rem",
+                      color: "text.primary",
                     }}
                     onClick={(event) => {
                       event.stopPropagation();
@@ -101,6 +110,7 @@ export default function CarouselPlayAlbum(props: any) {
                   <PlayCircle
                     sx={{
                       fontSize: "2.5rem",
+                      color: "text.primary",
                     }}
                     onClick={(event) => {
                       event.stopPropagation();
@@ -112,12 +122,13 @@ export default function CarouselPlayAlbum(props: any) {
                 )}
               </Box>
               <Image
-                src={item.imgUrl}
+                src={item?.cover as string}
                 alt="Picture of the author"
                 width={150}
                 height={150}
                 style={{
                   borderRadius: "20px",
+                  objectFit: "cover"
                 }}
               />
             </Box>

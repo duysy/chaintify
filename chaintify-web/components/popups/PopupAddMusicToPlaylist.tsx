@@ -5,6 +5,7 @@ import { TextField, Dialog, Checkbox, Typography, Button, Box, Stack, Autocomple
 import { useRouter } from "next/router";
 import { list as listPlaylist } from "../../apis/models/playlist/get_playlist";
 import { update as updatePlaylist, TUpdatePlayList } from "../../apis/models/playlist/put_playlist";
+import { useQuery } from "react-query";
 const style = {
   width: 400,
   minHeight: 400,
@@ -27,36 +28,37 @@ export default function PopupAddMusicToPlaylist(props: Props) {
 
     const listSong = props.listSong;
     const playlist_: TUpdatePlayList = { name: label, song: [...listSong] };
-
     console.log(idPlayList, value);
 
     const res = await updatePlaylist(+idPlayList, playlist_);
     if (res) {
       setStatusAdd("SUCCESS");
     }
-
     setTimeout(() => {
       handleClose();
     }, 1000);
   };
-  useEffect(() => {
-    const initPlaylists = async () => {
-      let playlists_ = await listPlaylist({});
-      playlists_ = playlists_.results;
-      playlists_ = playlists_.map((item: any, index: any) => {
-        return {
-          name: item.name,
-          id: item.id,
-        };
-      });
-      setPlaylists(playlists_);
-      // console.log("playlists", playlists_);
-    };
-    initPlaylists();
-  }, [props.open]);
+
+  const resPlaylist = useQuery(
+    ["listPlaylist_0_1000_0"],
+    async () => {
+      return await listPlaylist({ depth: 0, limit: 1000, offset: 0 });
+    },
+    {
+      onSuccess: (data) => {
+        let playlist_ = data.results.map((item: any, index: any) => {
+          return {
+            id: item.id,
+            name: item.name,
+          };
+        });
+        setPlaylists(playlist_);
+      },
+    }
+  );
   return (
     <div>
-      <Dialog onClose={handleClose} open={props.open}>
+      <Dialog onClose={handleClose} open={props.open} sx={{ zIndex: 2000 }}>
         <Box
           sx={style}
           style={{

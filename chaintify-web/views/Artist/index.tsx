@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Stack, Button, Grid, Checkbox } from "@mui/material";
-import { Favorite, MoreVert, Shuffle } from "@mui/icons-material";
 import Image from "next/image";
 import Wrap from "../wrap";
 import SectionTitle from "../../components/SectionTitle";
 import { list as listSong } from "../../apis/models/song/get_song";
 import MusicList from "../../components/MusicList";
-type TSong = {
-  id: Number;
-  imgUrl: "https://picsum.photos/100/100";
-  name: String;
-  artist: String;
-  time: String;
-  favorite: Boolean;
-};
-
+import { TMusicList } from "../../components/MusicList/types";
 export default function Artist() {
-  const [songs, setSongs] = useState<TSong[]>();
+  const [songs, setSongs] = useState<TMusicList[]>();
   useEffect(() => {
     const initSongs = async () => {
       let songs_ = await listSong({});
@@ -24,12 +15,14 @@ export default function Artist() {
       songs_ = songs_.map((item: any, index: any) => {
         return {
           id: item.id,
-          imgUrl: "https://picsum.photos/100/100",
+          checkBoxStatus: false,
           name: item.name,
+          cover: "https://picsum.photos/100/100",
           artist: "African giant",
+          album: "Album",
           time: item.length,
           favorite: true,
-        } as TSong;
+        } as TMusicList;
       });
 
       setSongs(songs_);
@@ -37,141 +30,6 @@ export default function Artist() {
     };
     initSongs();
   }, []);
-  // const songs = [
-  //   {
-  //     imgUrl: "https://picsum.photos/100/100",
-  //     song: "Watin man go do ~ Burna",
-  //     artist: "African giant",
-  //     time: "4:17",
-  //   },
-  //   {
-  //     imgUrl: "https://picsum.photos/100/100",
-  //     song: "Stand strong ~ Davido",
-  //     artist: "Single",
-  //     time: "4:17",
-  //   },
-  //   {
-  //     imgUrl: "https://picsum.photos/100/100",
-  //     song: "Closa ~ Ybee",
-  //     artist: "Obi datti",
-  //     time: "4:17",
-  //   },
-  //   {
-  //     imgUrl: "https://picsum.photos/100/100",
-  //     song: "Let me love you ~ Krisx",
-  //     artist: "Single",
-  //     time: "4:17",
-  //   },
-  //   {
-  //     imgUrl: "https://picsum.photos/100/100",
-  //     song: "Let me love you ~ Krisx",
-  //     artist: "Single",
-  //     time: "4:17",
-  //   },
-  // ];
-  // const Like = () => {
-  //   return (
-  //     <Stack spacing={1}>
-  //       {songs.map((item, index) => {
-  //         return (
-  //           <Box
-  //             key={index}
-  //             sx={{
-  //               backdropFilter: "blur(5px)",
-  //               borderRadius: "15px",
-  //               background: "rgba(51, 55, 59, 0.37)",
-  //               padding: "5px",
-  //             }}
-  //           >
-  //             <Grid container spacing={0} key={index}>
-  //               <Grid
-  //                 item
-  //                 xs={1}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "start",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 <Checkbox />
-  //               </Grid>
-  //               <Grid
-  //                 item
-  //                 xs={1}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "start",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 <Image
-  //                   src={item.imgUrl}
-  //                   alt="Picture of the author"
-  //                   width={40}
-  //                   height={40}
-  //                   style={{
-  //                     borderRadius: "1px",
-  //                   }}
-  //                 />
-  //               </Grid>
-  //               <Grid
-  //                 item
-  //                 xs={3}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "start",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 {item.song}
-  //               </Grid>
-  //               <Grid
-  //                 item
-  //                 xs={3}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "center",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 {item.artist}
-  //               </Grid>
-  //               <Grid
-  //                 item
-  //                 xs={3}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "center",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 {item.time}
-  //               </Grid>
-  //               <Grid
-  //                 item
-  //                 xs={1}
-  //                 sx={{
-  //                   display: "flex",
-  //                   justifyContent: "end",
-  //                   alignItems: "center",
-  //                   color: "text.primary",
-  //                 }}
-  //               >
-  //                 <Favorite />
-  //                 <MoreVert />
-  //               </Grid>
-  //             </Grid>
-  //           </Box>
-  //         );
-  //       })}
-  //     </Stack>
-  //   );
-  // };
   return (
     <Wrap>
       <Box display="flex">
@@ -190,7 +48,8 @@ export default function Artist() {
               color: "text.primary",
             }}
           >
-            BLACKPINK là nhóm nhạc nữ Hàn Quốc 4 thành viên đến từ công ty YG Entertainment. Debut vào năm 2016, nhóm nổi tiếng và trở thành một trong những nhóm nhạc KPop thành công nhất... XEM THÊM
+            BLACKPINK là nhóm nhạc nữ Hàn Quốc 4 thành viên đến từ công ty YG Entertainment. Debut vào năm 2016, nhóm nổi tiếng và trở thành một trong
+            những nhóm nhạc KPop thành công nhất... XEM THÊM
           </Typography>
           <Stack direction="row" spacing={5}>
             <Button
@@ -231,6 +90,7 @@ export default function Artist() {
             height={300}
             style={{
               borderRadius: "1000px",
+              objectFit: "cover"
             }}
           />
         </Box>
@@ -289,7 +149,7 @@ export default function Artist() {
       </Box>
       <Box>
         <SectionTitle>Danh sách bài hát</SectionTitle>
-        {songs && <MusicList list={songs} />}
+        {songs && <MusicList list={songs as TMusicList[]} />}
       </Box>
     </Wrap>
   );

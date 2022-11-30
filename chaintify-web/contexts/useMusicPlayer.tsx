@@ -26,16 +26,16 @@ type Props = {
 
 const fakeSongs = [
   {
-    path: "https://gateway.pinata.cloud/ipfs/QmYSsvafV8i9DHYTZPgzhs6pgGiKQA1nuVi9VDpwNMirPX",
+    path: "http://127.0.0.1:8000/media/test1.mp3",
     name: "Anh sai roi 1",
   },
   {
-    path: "https://gateway.pinata.cloud/ipfs/Qmf6QpZ4ifmEPHFGZE1bFvwfJ5wkNgQEuAZEAr1kp1TiaU",
+    path: "http://127.0.0.1:8000/media/test2.mp3",
     name: "Anh sai roi 2",
   },
 ];
 const MusicPlayerContextProvider = ({ children }: Props) => {
-  const [playerRef, setPlayerRef] = useState<React.Ref<any>>();
+  const [playerRef, setPlayerRef] = useState<React.Ref<any> | null>(null);
   const [hidden, setHidden] = useState(false);
   const [isPlay, setIsPlay] = useState(false);
   const [indexSongPlaylist, setIndexSongPlaylist] = useState(0);
@@ -58,12 +58,10 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
   };
 
   const setListMusicPlayer = (listSongMusicPlayer_: any) => {
+    if (listSongMusicPlayer_.length <= 0) return;
+    console.log(listSongMusicPlayer_);
     setListSongMusicPlayer(listSongMusicPlayer_);
     setIndexSongPlaylist(0);
-    setTimeout(() => {
-      play();
-      console.log("play");
-    }, 1000);
   };
 
   const onClickNext = () => {
@@ -72,6 +70,7 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
     if (indexSongPlaylist_ > listSongMusicPlayer.length - 1) {
       indexSongPlaylist_ = 0;
     }
+    console.log("onClickNext : ", indexSongPlaylist_, listSongMusicPlayer);
     setIndexSongPlaylist(indexSongPlaylist_);
   };
   const onClickPrevious = () => {
@@ -80,29 +79,39 @@ const MusicPlayerContextProvider = ({ children }: Props) => {
     if (indexSongPlaylist_ < 0) {
       indexSongPlaylist_ = 0;
     }
+    console.log("onClickPrevious : ", indexSongPlaylist_, listSongMusicPlayer);
     setIndexSongPlaylist(indexSongPlaylist_);
   };
-  const play = () => {
-    playerRef?.current?.audio?.current?.play();
-  };
-  const pause = () => {
-    playerRef?.current?.audio?.current?.pause();
-  };
-
   // const play = () => {
-  //   playerRef?.current?.play();
+  //   if (listSongMusicPlayer.length === 0) return;
+  //   playerRef?.current?.audio?.current?.play();
   // };
   // const pause = () => {
-  //   playerRef?.current?.pause();
+  //   if (listSongMusicPlayer.length === 0) return;
+  //   playerRef?.current?.audio?.current?.pause();
   // };
+
+  const play = () => {
+    if (listSongMusicPlayer.length === 0) return;
+    playerRef?.current?.play();
+  };
+  const pause = () => {
+    if (listSongMusicPlayer.length === 0) return;
+    playerRef?.current?.pause();
+  };
   useEffect(() => {
     if (listSongMusicPlayer.length <= 0) {
       setHidden(true);
     } else {
       setHidden(false);
+    }
+  }, [listSongMusicPlayer]);
+  useEffect(() => {
+    console.log("listSongMusicPlayer : ", listSongMusicPlayer, indexSongPlaylist);
+    if (indexSongPlaylist > 0) {
       play();
     }
-  }, [listSongMusicPlayer, indexSongPlaylist]);
+  }, [indexSongPlaylist]);
 
   return (
     <MusicPlayer.Provider
