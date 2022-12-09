@@ -1,0 +1,65 @@
+version: '1'
+services:
+  db:
+    image: postgres
+    container_name: chaintify-db
+    environment:
+      - POSTGRES_NAME=django
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
+    restart: always
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+  server:
+    build:
+      context: ./chaintify-server
+    container_name: chaintify-server
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./chaintify-server/app:/code
+    tty: true
+    restart: always
+
+  web:
+    build:
+      context: ./chaintify-web
+    container_name: chaintify-web
+    ports:
+      - 3000:3000
+      - 49153:49153
+    command: yarn dev
+    volumes:
+      - ./chaintify-web:/code
+    tty: true
+    restart: always
+    depends_on:
+      - server
+
+  ipfs:
+    image: lscr.io/linuxserver/ipfs
+    container_name: ipfs
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./data/ipfs:/config
+    ports:
+      - 80:80
+      - 4001:4001
+      - 5001:5001
+      - 8080:8080
+      - 443:443 #optional
+    restart: unless-stopped
+
+# docker-compose run web python manage.py migrate
+# docker-compose run web python manage.py createsuperuser 
+# docker-compose run web python manage.py collectstatic
+
+# docker-compose run web python manage.pyc migrate
+# docker-compose run web python manage.pyc createsuperuser 
+# docker-compose run web python manage.pyc collectstatic
+
+# docker exec -it b4f5571e9658 bash
