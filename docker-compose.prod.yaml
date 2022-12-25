@@ -78,3 +78,4 @@ networks:
 # docker-compose run web python manage.pyc collectstatic
 
 # docker exec -it b4f5571e9658 bash
+# docker-compose -f .\docker-compose.prod.yaml up web
