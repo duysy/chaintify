@@ -72,8 +72,5 @@ networks:
 # docker-compose run web python manage.py createsuperuser 
 # docker-compose run web python manage.py collectstatic
 
-# docker-compose run web python manage.pyc migrate
-# docker-compose run web python manage.pyc createsuperuser 
-# docker-compose run web python manage.pyc collectstatic
 
 # docker exec -it b4f5571e9658 bash
