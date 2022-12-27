@@ -77,7 +77,6 @@ networks:
 # https://docs.docker.com/engine/install/debian/
 # git submodule update --init --recursive
 # docker compose -f docker-compose.prod.yaml up web
-# git submodule update --recursive
 
 # docker stop $(docker ps -aq)
 # docker rm $(docker ps -aq)
