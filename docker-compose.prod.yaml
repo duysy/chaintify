@@ -85,4 +85,4 @@ networks:
 # docker system prune -a
 
 
-#update cross server , config server and webapp
+#update cross server , config server and webapp , foldel media
