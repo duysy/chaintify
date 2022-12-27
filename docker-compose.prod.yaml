@@ -54,9 +54,6 @@ services:
     ports:
       - 80:80
     command: yarn start -p 80
-    # volumes:
-    #   - ./chaintify-webapp:/code
-    #   - /code/node_modules
     tty: true
     restart: always
     depends_on:
@@ -72,11 +69,16 @@ networks:
 # docker compose run server python manage.py createsuperuser 
 # docker compose run server python manage.py collectstatic
 
-# docker compose -f docker-compose.prod.yaml up web
-# https://docs.docker.com/engine/install/debian/
-# git submodule update --init --recursive
-
 # sudo ufw allow 80/tcp0
 # sudo ufw allow 8080/tcp
 # sudo ufw allow 8000/tcp
 # sudo ufw allow 3000/tcp
+
+# https://docs.docker.com/engine/install/debian/
+# git submodule update --init --recursive
+# docker compose -f docker-compose.prod.yaml up web
+
+# docker stop $(docker ps -aq)
+# docker rm $(docker ps -aq)
+# docker rmi $(docker images -q)
+# docker system prune -a
