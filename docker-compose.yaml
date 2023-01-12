@@ -4,12 +4,16 @@ services:
     image: postgres
     container_name: db
     environment:
-      - POSTGRES_NAME=django
-      - POSTGRES_USER=django
+      - POSTGRES_USER=root
+      - POSTGRES_DB=django
       - POSTGRES_PASSWORD=django
     restart: always
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - chaintify
 
   ipfs:
     image: lscr.io/linuxserver/ipfs
@@ -43,6 +47,7 @@ services:
     restart: always
     depends_on:
       - ipfs
+      - db
     networks:
       - chaintify
 
