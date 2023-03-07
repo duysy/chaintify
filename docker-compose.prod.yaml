@@ -38,9 +38,9 @@ services:
     build:
       context: ./chaintify-server
     container_name: server
-    ports:
-      - 8000:8000
-    command: python manage.py runserver 0.0.0.0:8000
+    # ports:
+    #   - 8000:8000
+    command: gunicorn app.wsgi:application --bind 0.0.0.0:8000 --workers=1 --reload
     volumes:
       - ./chaintify-server/app:/code
     tty: true
@@ -65,6 +65,25 @@ services:
       - server
     networks:
       - chaintify
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - ./chaintify-server/app/static:/static
+      - ./chaintify-server/app/media:/media
+    restart: always
+    depends_on:
+      - web
+      - server
+    networks:
+      - chaintify
+    
 
 networks:
   chaintify:
