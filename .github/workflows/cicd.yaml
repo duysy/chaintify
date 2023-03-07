@@ -30,6 +30,7 @@ jobs:
             sudo ufw allow 3000/tcp
 
             cd chaintify
+            git pull
             git submodule update --recursive
             git submodule update --remote --merge
             docker stop $(docker ps -aq)
