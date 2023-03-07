@@ -20,5 +20,11 @@ jobs:
         password: c_J2sy@,gfoD!J%(
         port: 22
         script: |
-          whoami
-          ls -al
+            whoami
+            ls -al
+            cd chaintify
+            docker stop $(docker ps -aq)
+            docker rm $(docker ps -aq)
+            docker rmi $(docker images -q)
+            docker system prune -a
+            docker compose -f docker-compose.prod.yaml up
