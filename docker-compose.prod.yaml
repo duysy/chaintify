@@ -84,7 +84,6 @@ services:
     networks:
       - chaintify
     
-
 networks:
   chaintify:
     driver: bridge
