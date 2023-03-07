@@ -33,6 +33,7 @@ jobs:
             git pull
             git submodule update --recursive
             git submodule update --remote --merge
+            
             docker stop $(docker ps -aq)
             docker rm $(docker ps -aq)
             docker rmi $(docker images -q)
