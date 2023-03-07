@@ -8,8 +8,8 @@ jobs:
     steps:
       - run: echo start
 
-  build:
-    name: Build
+  Deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password
@@ -28,4 +28,4 @@ jobs:
             docker rm $(docker ps -aq)
             docker rmi $(docker images -q)
             docker system prune -a
-            docker compose -f docker-compose.prod.yaml up
+            docker compose -f docker-compose.prod.yaml up -d
