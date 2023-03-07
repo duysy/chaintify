@@ -24,7 +24,7 @@ jobs:
             whoami
             ls -al
 
-            sudo ufw allow 80/tcp0
+            sudo ufw allow 80/tcp
             sudo ufw allow 8080/tcp
             sudo ufw allow 8000/tcp
             sudo ufw allow 3000/tcp
@@ -33,7 +33,7 @@ jobs:
             git pull
             git submodule update --recursive
             git submodule update --remote --merge
-            
+
             docker stop $(docker ps -aq)
             docker rm $(docker ps -aq)
             docker rmi $(docker images -q)
