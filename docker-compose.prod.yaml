@@ -102,6 +102,7 @@ networks:
 # https://github.com/duysy/chaintify.git
 # git submodule update --init --recursive
 # git submodule update --recursive
+# git submodule update --remote --merge
 # docker compose -f docker-compose.prod.yaml up web
 
 # docker stop $(docker ps -aq)
