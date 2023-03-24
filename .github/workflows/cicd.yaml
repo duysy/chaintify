@@ -1,41 +1,42 @@
-# name: cicd
-# on:
-#   push:
-#     branches: [ main ]
-# jobs:
-#   say-start: 
-#     runs-on: ubuntu-latest
-#     steps:
-#       - run: echo start
+name: cicd
+on:
+  push:
+    branches: [ main ]
+jobs:
+  say-start: 
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo start
 
-#   Deploy:
-#     name: Deploy
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: executing remote ssh commands using password
-#       uses: appleboy/ssh-action@v0.1.8
-#       with:
-#         host: ${{ secrets.HOST }}
-#         username: ${{ secrets.USERNAME }}
-#         password: ${{ secrets.PASSWORD }}
-#         port: ${{ secrets.PORT }}
-#         command_timeout: 200m
-#         script: |
-#             whoami
-#             ls -al
+  Deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        command_timeout: 200m
+        script: |
+            whoami
+            ls -al
 
-#             sudo ufw allow 80/tcp
-#             sudo ufw allow 8080/tcp
-#             sudo ufw allow 8000/tcp
-#             sudo ufw allow 3000/tcp
+            sudo ufw allow 80/tcp
+            sudo ufw allow 8080/tcp
+            sudo ufw allow 8000/tcp
+            sudo ufw allow 3000/tcp
+            sudo ufw allow 443/tcp
 
-#             cd chaintify
-#             git pull
-#             git submodule update --recursive
-#             git submodule update --remote --merge
+            cd chaintify
+            git pull
+            git submodule update --recursive
+            git submodule update --remote --merge
 
-#             docker stop $(docker ps -aq)
-#             docker rm $(docker ps -aq)
-#             docker rmi $(docker images -q)
-#             docker system prune -f
-#             docker compose -f docker-compose.prod.yaml up -d
+            docker stop $(docker ps -aq)
+            docker rm $(docker ps -aq)
+            docker rmi $(docker images -q)
+            docker system prune -f
+            docker compose -f docker-compose.prod.yaml up -d
