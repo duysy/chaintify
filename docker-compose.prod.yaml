@@ -119,7 +119,6 @@ networks:
 # sudo apt-get update
 # sudo apt-get install certbot
 # sudo certbot certonly --standalone --preferred-challenges http -d chaintify.space
-
 # cp /etc/letsencrypt/live/chaintify.space-0001/fullchain.pem /root/chaintify/config/nginx/ssl
 # cp /etc/letsencrypt/live/chaintify.space-0001/privkey.pem /root/chaintify/config/nginx/ssl
 
