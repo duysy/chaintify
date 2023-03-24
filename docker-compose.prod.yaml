@@ -81,8 +81,8 @@ services:
       - ./chaintify-server/app/static:/static
       - ./chaintify-server/app/media:/media
 
-      - ./chaintify/config/nginx/ssl/chaintify.space:/etc/nginx/ssl/chaintify.space
-      - ./chaintify/config/nginx/ssl/api.chaintify.space:/etc/nginx/ssl/api.chaintify.space
+      - ./config/nginx/ssl/chaintify.space:/etc/nginx/ssl/chaintify.space
+      - ./config/nginx/ssl/api.chaintify.space:/etc/nginx/ssl/api.chaintify.space
     restart: always
     depends_on:
       - web
