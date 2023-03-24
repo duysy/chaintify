@@ -26,10 +26,11 @@ services:
       - ./data/ipfs:/config
     ports:
       # - 80:80
+      # - 443:443 #optional
       - 4001:4001
       - 5001:5001
       - 8080:8080
-      - 443:443 #optional
+      
     restart: always
     networks:
       - chaintify
@@ -79,7 +80,7 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - ./chaintify-server/app/static:/static
       - ./chaintify-server/app/media:/media
-      
+
       - ./config/nginx/ssl:/etc/nginx/ssl
     restart: always
     depends_on:
