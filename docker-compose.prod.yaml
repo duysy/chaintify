@@ -79,6 +79,7 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - ./chaintify-server/app/static:/static
       - ./chaintify-server/app/media:/media
+      
       - ./config/nginx/ssl:/etc/nginx/ssl
     restart: always
     depends_on:
