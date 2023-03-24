@@ -72,19 +72,21 @@ services:
     ports:
       - 8000:8000
       - 80:80
+      - 443:443
     expose:
       - 8000
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - ./chaintify-server/app/static:/static
       - ./chaintify-server/app/media:/media
+      - ./config/nginx/ssl:/etc/nginx/ssl
     restart: always
     depends_on:
       - web
       - server
     networks:
       - chaintify
-    
+
 networks:
   chaintify:
     driver: bridge
