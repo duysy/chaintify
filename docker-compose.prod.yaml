@@ -81,7 +81,8 @@ services:
       - ./chaintify-server/app/static:/static
       - ./chaintify-server/app/media:/media
 
-      - ./config/nginx/ssl:/etc/nginx/ssl
+      - /etc/letsencrypt/live/chaintify.space-0001:/etc/nginx/ssl/chaintify.space
+      - /etc/letsencrypt/live/api.chaintify.space:/etc/nginx/ssl/api.chaintify.space
     restart: always
     depends_on:
       - web
@@ -119,7 +120,7 @@ networks:
 # sudo apt-get update
 # sudo apt-get install certbot
 # sudo certbot certonly --standalone --preferred-challenges http -d chaintify.space
-# cp /etc/letsencrypt/live/chaintify.space-0001/fullchain.pem /root/chaintify/config/nginx/ssl
-# cp /etc/letsencrypt/live/chaintify.space-0001/privkey.pem /root/chaintify/config/nginx/ssl
+# sudo certbot certonly --standalone --preferred-challenges http -d api.chaintify.space
 
+# config path ssl
 #update cross server , config server and webapp , foldel media
