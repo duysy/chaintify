@@ -29,7 +29,7 @@ services:
       # - 443:443 #optional
       - 4001:4001
       - 5001:5001
-      - 8080:8080
+      # - 8080:8080
 
     restart: always
     networks:
@@ -83,6 +83,7 @@ services:
 
       - ./config/nginx/ssl/chaintify.space:/etc/nginx/ssl/chaintify.space
       - ./config/nginx/ssl/api.chaintify.space:/etc/nginx/ssl/api.chaintify.space
+      - ./config/nginx/ssl/ipfs.chaintify.space:/etc/nginx/ssl/ipfs.chaintify.space
     restart: always
     depends_on:
       - web
@@ -125,5 +126,9 @@ networks:
 # sudo certbot certonly --standalone --preferred-challenges http -d api.chaintify.space
 # mkdir /root/chaintify/config/nginx/ssl/api.chaintify.space
 # cp /etc/letsencrypt/live/api.chaintify.space/* /root/chaintify/config/nginx/ssl/api.chaintify.space
+# sudo certbot certonly --standalone --preferred-challenges http -d ipfs.chaintify.space
+# mkdir /root/chaintify/config/nginx/ssl/ipfs.chaintify.space
+# cp /etc/letsencrypt/live/ipfs.chaintify.space/* /root/chaintify/config/nginx/ssl/ipfs.chaintify.space
+
 # config path ssl
 #update cross server , config server and webapp , foldel media
