@@ -30,7 +30,7 @@ services:
       - 4001:4001
       - 5001:5001
       - 8080:8080
-      
+
     restart: always
     networks:
       - chaintify
@@ -101,6 +101,7 @@ networks:
 # sudo ufw allow 8080/tcp
 # sudo ufw allow 8000/tcp
 # sudo ufw allow 3000/tcp
+# sudo ufw allow 443/tcp
 
 # https://docs.docker.com/engine/install/debian/
 # https://github.com/duysy/chaintify.git
@@ -114,5 +115,12 @@ networks:
 # docker rmi $(docker images -q)
 # docker system prune -a
 
+
+# sudo apt-get update
+# sudo apt-get install certbot
+# sudo certbot certonly --standalone --preferred-challenges http -d chaintify.space
+
+# cp /etc/letsencrypt/live/chaintify.space-0001/fullchain.pem /root/chaintify/config/nginx/ssl
+# cp /etc/letsencrypt/live/chaintify.space-0001/privkey.pem /root/chaintify/config/nginx/ssl
 
 #update cross server , config server and webapp , foldel media
